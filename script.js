@@ -264,7 +264,7 @@ function mykeydown(e) {
 function repaint(tileSize=60) {
     gc.fillStyle = "white";
     gc.lineWidth = 1.5;
-    gc.fillRect(0, 0, SIZE * 60 + 120, SIZE * 60 + 10);
+    gc.fillRect(0, 0, SIZE * tileSize + 120, SIZE * tileSize + 10);
 
     for (let y = 1; y < data.length - 1; y++) {
         for (let x = 1; x < data[y].length - 1; x++) {
@@ -279,24 +279,24 @@ function repaint(tileSize=60) {
             } else {
                 gc.fillStyle = "#ddd";
             }
-            gc.fillRect((x-1) * 60 + 60, (y-1) * 60 + 5, 60, 60);
+            gc.fillRect((x-1) * tileSize + 60, (y-1) * tileSize + 5, tileSize, tileSize);
             gc.strokeStyle = "#432";
-            gc.strokeRect((x-1) * 60 + 60, (y-1) * 60 + 5, 60, 60);
+            gc.strokeRect((x-1) * tileSize + 60, (y-1) * tileSize + 5, tileSize, tileSize);
 
             if (data[y][x] == 11) {
                 gc.fillStyle = "#ff5252";
                 gc.beginPath();
-                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 22) {
                 gc.fillStyle = "#7192f5";
                 gc.beginPath();
-                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 33) {
                 gc.fillStyle = "#30cf8a";
                 gc.beginPath();
-                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             }
         }
@@ -313,15 +313,16 @@ function repaint(tileSize=60) {
         } else {
             gc.fillStyle = "white"; 
         }
-        gc.fillRect((px-1) * 60 + 17.5 + 60, (py-1) * 60 + 17.5 + 5, 25, 25);
+        gc.fillRect((px-1) * tileSize + 17.5 + 60, (py-1) * tileSize + 17.5 + 5, 25, 25);
         gc.strokeStyle = "#432";
-        gc.strokeRect((px-1) * 60 + 17.5 + 60, (py-1) * 60 + 17.5 + 5, 25, 25);
+        gc.strokeRect((px-1) * tileSize + 17.5 + 60, (py-1) * tileSize + 17.5 + 5, 25, 25);
     }
 
     drawCircle();
 
     if (isGameCleared) { // GameClear
-        gc.font = "bold 70px Philosopher, sans-serif";
+        let fontSize = SIZE * 10 + 20;
+        gc.font = `bold ${fontSize}px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
@@ -331,7 +332,8 @@ function repaint(tileSize=60) {
     } 
     
     if (isGameOver) { // GameOver
-        gc.font = "bold 70px Philosopher, sans-serif";
+        let fontSize = SIZE * 10 + 20;
+        gc.font = `bold ${fontSize}px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
