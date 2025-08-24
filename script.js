@@ -51,7 +51,6 @@ function initializeGame() {
     initialPy = py;
 
     setTargetScores();
-    document.getElementById("newGame").style.display = "none";
     repaint();
 }
 
@@ -107,12 +106,13 @@ function mykeydown(e) {
         data[dy][dx] = playerColor;
     }
 
-    repaint();
     check();
+    repaint();
 }
 
 function repaint() {
     gc.fillStyle = "white";
+    gc.lineWidth = 1;
     gc.fillRect(0, 0, (SIZE + 2) * 50, (SIZE + 2) * 50);
 
     for (let y = 1; y < data.length - 1; y++) {
@@ -123,8 +123,10 @@ function repaint() {
                 gc.fillStyle = "#7192f5";
             } else if (data[y][x] == 3) {
                 gc.fillStyle = "#30cf8a";
-            } else {
+            } else if (!isGameOver){
                 gc.fillStyle = "white";
+            } else {
+                gc.fillStyle = "#ddd";
             }
             gc.fillRect(x * 50, y * 50, 50, 50);
             gc.strokeStyle = "#432";
@@ -164,6 +166,16 @@ function repaint() {
     gc.strokeRect(px * 50 + 15, py * 50 + 15, 20, 20);
 
     drawCircle();
+
+    if (isGameOver) {
+        gc.font = "bold 60px Philosopher, sans-serif";
+        gc.textAlign = "center";
+        gc.strokeStyle = "black";
+        gc.lineWidth = 5;
+        gc.strokeText("Game Over", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.fillStyle = "red";
+        gc.fillText("Game Over", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+    }
 }
 
 function check() {
@@ -179,7 +191,9 @@ function check() {
             }
         }
     }
-    if (scores.red == targetScores.red && scores.blue == targetScores.blue && scores.green == targetScores.green) {
+
+    if (scores.red == targetScores.red && scores.blue == targetScores.blue && scores.green == targetScores.green) { 
+        // クリア
         perfect[totalScore] = 1;
         if (count == SIZE * SIZE - 1) perfect[totalScore] = 2;
         totalScore++;
@@ -187,18 +201,59 @@ function check() {
         if (totalScore == 5) {
             document.getElementById("fin").textContent = "Complete!";
         } else {
-            let ex = "";
-            for (let i = 0; i < totalScore; i++) {
-                ex += "!";
-            }
-            document.getElementById("fin").textContent = "You Win" + ex;
-            document.getElementById("newGame").style.display = "block"; // Appear btn
+            nextGame();
         }
+    } else if (scores.red > targetScores.red || scores.blue > targetScores.blue || scores.green > targetScores.green || !canMove() || !isColorEnough(scores)) { 
+        // ターゲットスコアを超える/動けない/色が足りない場合はゲームオーバー
         isGameOver = true;
-    }
+    } 
 }
 
+// 動けるかどうか
+function canMove() {
+    const dirs = [
+        { dx: 0, dy: -1 },
+        { dx: 0, dy: 1 },
+        { dx: -1, dy: 0 },
+        { dx: 1, dy: 0 }
+    ];
+    for (let { dx, dy } of dirs) {
+        let nx = px + dx, ny = py + dy;
+        if (data[ny][nx] == 6) continue; // 壁は動けない
+        if (data[ny][nx] == 0) return true; // 空きマスは動ける
+        if (data[ny][nx] == playerColor || data[ny][nx] == 11 || data[ny][nx] == 22 || data[ny][nx] == 33) return true; // 自分の色 or 色の起点は動ける
+    }
+    return false;
+}
+
+function isColorEnough(scores) {
+    if (scores.red >= 1 && scores.red < targetScores.red && playerColor != 1) return false;
+    if (scores.blue >= 1 && scores.blue < targetScores.blue && playerColor != 2) return false;
+    if (scores.green >= 1 && scores.green < targetScores.green && playerColor != 3) return false;
+    return true;
+}
+
+// ゲームを最初から始める
 function startNewGame() {
+    isGameOver = false;
+    playerColor = 0;
+    count = 0;
+    totalScore = 0;
+    perfect = [0, 0, 0, 0, 0];
+    drawCircle();
+
+    for (let y = 1; y <= SIZE; y++) {
+        for (let x = 1; x <= SIZE; x++) {
+            data[y][x] = 0;
+        }
+    }
+
+    initializeGame();
+    document.getElementById("fin").textContent = "";
+}
+
+// 次の盤面へ
+function nextGame() {
     isGameOver = false;
     playerColor = 0;
     count = 0;
@@ -213,32 +268,33 @@ function startNewGame() {
     document.getElementById("fin").textContent = "";
 }
 
-function resetGame() {
-    isGameOver = false;
-    playerColor = 0;
+// 同じ盤面をリトライ
+// function resetGame() {
+//     isGameOver = false;
+//     playerColor = 0;
 
-    for (let y = 1; y < SIZE + 1; y++) {
-        for (let x = 1; x < SIZE + 1; x++) {
-            if (data[y][x] === 1 || data[y][x] === 2 || data[y][x] === 3) {
-                data[y][x] = 0;
-            }
-        }
-    }
+//     for (let y = 1; y < SIZE + 1; y++) {
+//         for (let x = 1; x < SIZE + 1; x++) {
+//             if (data[y][x] === 1 || data[y][x] === 2 || data[y][x] === 3) {
+//                 data[y][x] = 0;
+//             }
+//         }
+//     }
 
-    initialColorPoints.forEach(({ x, y, value }) => {
-        data[y][x] = value;
-    });
+//     initialColorPoints.forEach(({ x, y, value }) => {
+//         data[y][x] = value;
+//     });
 
-    px = initialPx;
-    py = initialPy;
+//     px = initialPx;
+//     py = initialPy;
 
-    document.getElementById("fin").textContent = "";
-    totalScore = 0;
-    count = 0;
-    perfect = [0, 0, 0, 0, 0];
+//     document.getElementById("fin").textContent = "";
+//     totalScore = 0;
+//     count = 0;
+//     perfect = [0, 0, 0, 0, 0];
 
-    repaint();
-}
+//     repaint();
+// }
 
 function drawCircle() {
     const ctx = document.getElementById("canvasCircle").getContext("2d");
@@ -255,5 +311,4 @@ function drawCircle() {
     }
 }
 
-document.getElementById("retry").addEventListener("click", resetGame);
-document.getElementById("newGame").addEventListener("click", startNewGame);
+document.getElementById("restart").addEventListener("click", startNewGame);
