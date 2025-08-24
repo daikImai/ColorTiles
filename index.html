@@ -18,14 +18,14 @@
     <div class="score wrapper">
       <canvas id="canvasCircle" width="200" height="40"></canvas>
     </div>
-    <p class="goal">
+    <p id="goal" class="goal" style="display: none;">
       <span class="red">■</span> × <span id="scores.red"></span> 
       <span class="blue">■</span> × <span id="scores.blue"></span> 
       <span class="green">■</span> × <span id="scores.green"></span>
     </p>
     <div class="buttons wrapper">
-      <button id="restart" class="btn">Restart</button>
-      <!-- <button id="playAgain" class="btn" style="display: none;">PlayAgain</button> -->
+      <button id="play" class="btn">Play</button>
+      <button id="quit" class="btn" style="display: none;">Quit</button>
     </div>
     <div class="big-fonts">
       <span id="result"></span>
