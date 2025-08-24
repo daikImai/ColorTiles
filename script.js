@@ -11,9 +11,11 @@ let initialColorPoints = [];
 let colorPoints = [11, 22, 33]; // 11: red, 22: blue, 33: green
 let targetScores = { red: 0, blue: 0, green: 0 };
 let isGameOver = false;
-let count = 0;
+let isGameCleared = false;
+let countPerGame = 0; // 1ゲームごとの動いた回数
+let countTotal = 0; // 5ゲームを通して動いた回数
 let perfect = [0, 0, 0, 0, 0]; // 0:not-cleared, 1: cleared, 2: perfect
-let totalScore = 0;
+let totalScore = 0; // 何個クリアしているか
 
 function getRandomEmptyPosition() {
     let x, y;
@@ -68,15 +70,16 @@ function setTargetScores() {
 }
 
 function mykeydown(e) {
-    if (isGameOver) return;
+    if (isGameOver || isGameCleared) return;
 
     let dx = px;
     let dy = py;
     switch (e.keyCode) {
-        case 37: dx--; break; //left
-        case 38: dy--; break; //up
-        case 39: dx++; break; //right
-        case 40: dy++; break; //down
+        case 37: dx--; break; // left
+        case 38: dy--; break; // up
+        case 39: dx++; break; // right
+        case 40: dy++; break; // down
+        default: return; // others
     }
     
     if (data[dy][dx] != 6) {
@@ -88,19 +91,32 @@ function mykeydown(e) {
         if (data[dy][dx] > 0 && data[dy][dx] !== playerColor && data[dy][dx] !== 11 && data[dy][dx] !== 22 && data[dy][dx] !== 33) {
             return;
         }
-        if (playerColor > 0) {
+        if (playerColor > 0) { // 最初に色を取ってからカウント開始
             data[py][px] = playerColor;
-            count++;
+            countPerGame++;
+            countTotal++;
         }
 
         px = dx;
         py = dy;
 
         if (data[dy][dx] == 11) {
+            if (playerColor == 0) { // 最初に色を取ったときはカウント
+                countPerGame++;
+                countTotal++;
+            }
             playerColor = 1; // red
         } else if (data[dy][dx] == 22) {
+            if (playerColor == 0) { // 最初に色を取ったときはカウント
+                countPerGame++;
+                countTotal++;
+            }
             playerColor = 2; // blue
         } else if (data[dy][dx] == 33) {
+            if (playerColor == 0) { // 最初に色を取ったときはカウント
+                countPerGame++;
+                countTotal++;
+            }
             playerColor = 3; // green
         }
         data[dy][dx] = playerColor;
@@ -167,7 +183,17 @@ function repaint() {
 
     drawCircle();
 
-    if (isGameOver) {
+    if (isGameCleared) { // Clear
+        gc.font = "bold 60px Philosopher, sans-serif";
+        gc.textAlign = "center";
+        gc.strokeStyle = "black";
+        gc.lineWidth = 5;
+        gc.strokeText("Game Clear", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.fillStyle = "yellow";
+        gc.fillText("Game Clear", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+    } 
+    
+    if (isGameOver) { // GameOver
         gc.font = "bold 60px Philosopher, sans-serif";
         gc.textAlign = "center";
         gc.strokeStyle = "black";
@@ -176,6 +202,8 @@ function repaint() {
         gc.fillStyle = "red";
         gc.fillText("Game Over", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
     }
+
+    document.getElementById("result").textContent = "moves: " + countTotal;
 }
 
 function check() {
@@ -195,11 +223,11 @@ function check() {
     if (scores.red == targetScores.red && scores.blue == targetScores.blue && scores.green == targetScores.green) { 
         // クリア
         perfect[totalScore] = 1;
-        if (count == SIZE * SIZE - 1) perfect[totalScore] = 2;
+        if (countPerGame == SIZE * SIZE) perfect[totalScore] = 2; // 一筆書きはperfect
         totalScore++;
         drawCircle();
-        if (totalScore == 5) {
-            document.getElementById("fin").textContent = "Complete!";
+        if (totalScore == 5) { // 5連続クリアしたら
+            isGameCleared = true;
         } else {
             nextGame();
         }
@@ -236,8 +264,10 @@ function isColorEnough(scores) {
 // ゲームを最初から始める
 function startNewGame() {
     isGameOver = false;
+    isGameCleared = false;
     playerColor = 0;
-    count = 0;
+    countPerGame = 0;
+    countTotal = 0;
     totalScore = 0;
     perfect = [0, 0, 0, 0, 0];
     drawCircle();
@@ -249,14 +279,13 @@ function startNewGame() {
     }
 
     initializeGame();
-    document.getElementById("fin").textContent = "";
 }
 
 // 次の盤面へ
 function nextGame() {
     isGameOver = false;
     playerColor = 0;
-    count = 0;
+    countPerGame = 0;
 
     for (let y = 1; y <= SIZE; y++) {
         for (let x = 1; x <= SIZE; x++) {
@@ -265,7 +294,6 @@ function nextGame() {
     }
 
     initializeGame();
-    document.getElementById("fin").textContent = "";
 }
 
 // 同じ盤面をリトライ
@@ -288,9 +316,8 @@ function nextGame() {
 //     px = initialPx;
 //     py = initialPy;
 
-//     document.getElementById("fin").textContent = "";
 //     totalScore = 0;
-//     count = 0;
+//     countPerGame = 0;
 //     perfect = [0, 0, 0, 0, 0];
 
 //     repaint();
