@@ -2,7 +2,17 @@
 
 body {
     font-family: Philosopher;
-    /* background-color: #13325d; */
+    /* background-color: #d0e2fa; */
+}
+
+button {
+    font-family: Philosopher;
+    background-color: #3964a1;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding-bottom: 0.1rem;
 }
 
 .wrapper {
@@ -10,7 +20,68 @@ body {
     justify-content: center;
 }
 
+.headers {
+    gap: 3rem;
+    margin-top: 2.5rem;
+    font-size: 1.2rem;
+    color: #432;
+}
+
+.headers p:hover {
+    color: #13325d;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#mask1, #mask2, #mask3 {
+    background: rgba(0, 0, 0, .1);
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#myPageModal, #howToPlayModal, #rankingModal {
+    width: 400px;
+    height: 700px;
+    padding: 0.5rem 0.7rem 1.5rem;
+    background-color: white;
+    border-radius: 16px;
+    position: absolute;
+    inset: 2.7rem 0 auto;
+    margin: auto;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
+    position: absolute;
+    bottom: 1.7rem;
+    height: 30px;
+    width: 60px;
+    font-size: 0.9rem;
+    padding-bottom: 0.2rem;
+}
+
+#closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover {
+    background-color: #13325d;
+}
+
+.results {
+    text-align: center;
+    margin: 2.5rem 0 0.5rem;
+    font-size: 1.5rem;
+}
+
 .score {
+    margin: 1.5rem 0 1.5rem;
+}
+
+#goal {
+    text-align: center;
+    font-size: 2rem;
     margin-bottom: 3rem;
 }
 
@@ -19,20 +90,22 @@ body {
     margin-bottom: 1rem;
 }
 
-/* .btn {
-    
-} */
-
-.goal {
-    text-align: center;
+#play {
+    background-color: #3964a1;
     font-size: 2rem;
-    margin-bottom: 3rem;
+    height: 40px;
+    width: 80px;
 }
 
-.big-fonts {
-    text-align: center;
-    margin-top: 3rem;
-    font-size: 40px;
+#quit {
+    background-color: #ff5252;
+    font-size: 2rem;
+    height: 40px;
+    width: 80px;
+}
+
+#quit:hover {
+    background-color: #c44040;
 }
 
 .red { color: #ff5252}

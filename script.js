@@ -10,6 +10,7 @@ let playerColor = 0; // 0: none, 1: red, 2: blue, 3: green
 let initialColorPoints = [];
 let colorPoints = [11, 22, 33]; // 11: red, 22: blue, 33: green
 let targetScores = { red: 0, blue: 0, green: 0 };
+let isAnimating = false;
 let isPlaying = false;
 let isGameOver = false;
 let isGameCleared = false;
@@ -19,6 +20,18 @@ let perfect = [0, 0, 0, 0, 0]; // 0:not-cleared, 1: cleared, 2: perfect
 let totalScore = 0; // 何個クリアしているか
 let startTime = 0; // ゲーム開始時刻（ms）
 let elapsedTime = 0; // 経過時間（s）
+
+const showListKeyframes = {
+    opacity: [0, 1],
+};
+const hideListKeyframes = {
+    opacity: [1, 0],
+};
+const options = {
+    duration: 400,
+    easing: 'ease',
+    fill: 'forwards',
+};
 
 function getRandomEmptyPosition() {
     let x, y;
@@ -50,6 +63,87 @@ document.addEventListener("DOMContentLoaded", () => {
             window.addEventListener("keydown", mykeydown);
         }
     });
+
+    // マイページ
+    myPageButton.addEventListener("click", async () => {
+        myPageModal.style.visibility = "visible";
+        mask1.style.visibility = "visible";
+        myPageModal.animate(showListKeyframes, options);
+        mask1.animate(showListKeyframes, options);
+    });
+
+    // マイページの「閉じる」ボタン
+    closeMyPageButton.addEventListener("click", () => {
+        if (isAnimating) return; // すでにアニメーション中なら処理しない
+        isAnimating = true;
+        mask1.animate(hideListKeyframes, options);
+        mask1.style.pointerEvents = "none";
+        myPageModal.animate(hideListKeyframes, options).onfinish = () => { // アニメーション完了後にクリック許可
+            mask1.style.pointerEvents = "auto";
+            isAnimating = false;
+            myPageModal.style.visibility = "hidden";
+            mask1.style.visibility = "hidden";
+        };
+    });
+
+    // マイページのマスク
+    mask1.addEventListener("click", () => {
+        closeMyPageButton.dispatchEvent(new PointerEvent("click"));
+    });
+
+    // 遊び方
+    howToPlayButton.addEventListener("click", async () => {
+        howToPlayModal.style.visibility = "visible";
+        mask2.style.visibility = "visible";
+        howToPlayModal.animate(showListKeyframes, options);
+        mask2.animate(showListKeyframes, options);
+    });
+
+    // 遊び方の「閉じる」ボタン
+    closeHowToPlayButton.addEventListener("click", () => {
+        if (isAnimating) return; // すでにアニメーション中なら処理しない
+        isAnimating = true;
+        mask2.animate(hideListKeyframes, options);
+        mask2.style.pointerEvents = "none";
+        howToPlayModal.animate(hideListKeyframes, options).onfinish = () => { // アニメーション完了後にクリック許可
+            mask2.style.pointerEvents = "auto";
+            isAnimating = false;
+            howToPlayModal.style.visibility = "hidden";
+            mask2.style.visibility = "hidden";
+        };
+    });
+
+    // 遊び方のマスク
+    mask2.addEventListener("click", () => {
+        closeHowToPlayButton.dispatchEvent(new PointerEvent("click"));
+    });
+
+    // ランキング
+    rankingButton.addEventListener("click", async () => {
+        rankingModal.style.visibility = "visible";
+        mask3.style.visibility = "visible";
+        rankingModal.animate(showListKeyframes, options);
+        mask3.animate(showListKeyframes, options);
+    });
+
+    // ランキングの「閉じる」ボタン
+    closeRankingButton.addEventListener("click", () => {
+        if (isAnimating) return; // すでにアニメーション中なら処理しない
+        isAnimating = true;
+        mask3.animate(hideListKeyframes, options);
+        mask3.style.pointerEvents = "none";
+        rankingModal.animate(hideListKeyframes, options).onfinish = () => { // アニメーション完了後にクリック許可
+            mask3.style.pointerEvents = "auto";
+            isAnimating = false;
+            rankingModal.style.visibility = "hidden";
+            mask3.style.visibility = "hidden";
+        };
+    });
+
+    // ランキングのマスク
+    mask3.addEventListener("click", () => {
+        closeRankingButton.dispatchEvent(new PointerEvent("click"));
+    });
 });
 
 function initializeGame() {
@@ -72,7 +166,6 @@ function startGame() {
         startTime = Date.now();
         initializeGame();
         document.getElementById("play").style.display = "none"; 
-        document.getElementById("goal").style.display = "block";
         document.getElementById("quit").style.display = "block"; 
         requestAnimationFrame(loop);
     }
@@ -168,10 +261,10 @@ function mykeydown(e) {
     repaint();
 }
 
-function repaint() {
+function repaint(tileSize=60) {
     gc.fillStyle = "white";
-    gc.lineWidth = 1;
-    gc.fillRect(0, 0, (SIZE + 2) * 50, (SIZE + 2) * 50);
+    gc.lineWidth = 1.5;
+    gc.fillRect(0, 0, SIZE * 60 + 120, SIZE * 60 + 10);
 
     for (let y = 1; y < data.length - 1; y++) {
         for (let x = 1; x < data[y].length - 1; x++) {
@@ -181,29 +274,29 @@ function repaint() {
                 gc.fillStyle = "#7192f5";
             } else if (data[y][x] == 3) {
                 gc.fillStyle = "#30cf8a";
-            } else if (!isGameOver){
+            } else if (!isGameOver && isPlaying){
                 gc.fillStyle = "white";
             } else {
                 gc.fillStyle = "#ddd";
             }
-            gc.fillRect(x * 50, y * 50, 50, 50);
+            gc.fillRect((x-1) * 60 + 60, (y-1) * 60 + 5, 60, 60);
             gc.strokeStyle = "#432";
-            gc.strokeRect(x * 50, y * 50, 50, 50);
+            gc.strokeRect((x-1) * 60 + 60, (y-1) * 60 + 5, 60, 60);
 
             if (data[y][x] == 11) {
                 gc.fillStyle = "#ff5252";
                 gc.beginPath();
-                gc.arc(x * 50 + 25, y * 50 + 25, 10, 0, Math.PI * 2);
+                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 22) {
                 gc.fillStyle = "#7192f5";
                 gc.beginPath();
-                gc.arc(x * 50 + 25, y * 50 + 25, 10, 0, Math.PI * 2);
+                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 33) {
                 gc.fillStyle = "#30cf8a";
                 gc.beginPath();
-                gc.arc(x * 50 + 25, y * 50 + 25, 10, 0, Math.PI * 2);
+                gc.arc((x-1) * 60 + 30 + 60, (y-1) * 60 + 30 + 5, 12.5, 0, Math.PI * 2);
                 gc.fill();
             }
         }
@@ -220,34 +313,34 @@ function repaint() {
         } else {
             gc.fillStyle = "white"; 
         }
-        gc.fillRect(px * 50 + 15, py * 50 + 15, 20, 20);
+        gc.fillRect((px-1) * 60 + 17.5 + 60, (py-1) * 60 + 17.5 + 5, 25, 25);
         gc.strokeStyle = "#432";
-        gc.strokeRect(px * 50 + 15, py * 50 + 15, 20, 20);
+        gc.strokeRect((px-1) * 60 + 17.5 + 60, (py-1) * 60 + 17.5 + 5, 25, 25);
     }
 
     drawCircle();
 
     if (isGameCleared) { // GameClear
-        gc.font = "bold 60px Philosopher, sans-serif";
+        gc.font = "bold 70px Philosopher, sans-serif";
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
-        gc.strokeText("Game Clear", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.strokeText("Game Clear", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
         gc.fillStyle = "gold";
-        gc.fillText("Game Clear", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.fillText("Game Clear", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
     } 
     
     if (isGameOver) { // GameOver
-        gc.font = "bold 60px Philosopher, sans-serif";
+        gc.font = "bold 70px Philosopher, sans-serif";
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
-        gc.strokeText("Game Over", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.strokeText("Game Over", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
         gc.fillStyle = "red";
-        gc.fillText("Game Over", (SIZE + 2) * 25, (SIZE + 2) * 25 + 20);
+        gc.fillText("Game Over", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
     }
 
-    document.getElementById("result").textContent = "moves: " + countTotal + ", time: " + formatTime(elapsedTime);
+    document.getElementById("result").textContent = countTotal + " ⌛" + formatTime(elapsedTime);
 }
 
 function check() {
@@ -331,7 +424,9 @@ function quitGame() {
 
     document.getElementById("quit").style.display = "none";
     document.getElementById("play").style.display = "block";
-    document.getElementById("goal").style.display = "none"; 
+    document.getElementById("scores.red").textContent = "?";
+    document.getElementById("scores.blue").textContent = "?";
+    document.getElementById("scores.green").textContent = "?";
 }
 
 // 次の盤面へ
@@ -382,11 +477,13 @@ function drawCircle() {
     for (let i = 0; i < 5; i++) {
         ctx.beginPath();
         ctx.arc(20 + i*40, 25, 10, 0, Math.PI * 2);
-        if (perfect[i] == 0) ctx.fillStyle = "white"
+        if (perfect[i] == 0 && !isGameOver && isPlaying) ctx.fillStyle = "white"
+        else if (perfect[i] == 0) ctx.fillStyle = "#ddd";
         else if (perfect[i] == 1) ctx.fillStyle = "gold";
         else if (perfect[i] == 2) ctx.fillStyle = "#f27efc";
         ctx.fill();
         ctx.strokeStyle = "#432";
+        ctx.lineWidth = 1.5;
         ctx.stroke();
     }
 }

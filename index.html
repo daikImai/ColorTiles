@@ -12,23 +12,67 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <div class="wrapper">
-      <canvas id="canvas" width="350" height="350"></canvas>
+    <div class="wrapper headers">
+      <p id="myPageButton">マイページ</p>
+      <p id="howToPlayButton">遊び方</p>
+      <p id="rankingButton">ランキング</p>
     </div>
+
+    <!-- マイページモーダル -->
+    <section id="myPageModal">
+      <div class="wrapper">
+        <button id="closeMyPageButton">閉じる</button>
+      </div>
+    </section>
+    <div id="mask1"></div>
+
+    <!-- 遊び方モーダル -->
+    <section id="howToPlayModal">
+      <div class="wrapper">
+        <button id="closeHowToPlayButton">閉じる</button>
+      </div>
+    </section>
+    <div id="mask2"></div>
+
+    <!-- ランキングモーダル -->
+    <section id="rankingModal">
+      <div class="wrapper">
+        <button id="closeRankingButton">閉じる</button>
+      </div>
+    </section>
+    <div id="mask3"></div>
+
+    <div class="results">
+      <span id="result"></span>
+    </div>
+
+    <!-- 盤面描画 -->
+    <div class="wrapper">
+      <!-- SIZE * 50 + x (xは余白) -->
+      <canvas id="canvas" width="420" height="310"></canvas>
+    </div>
+
+    <!-- 得点描画 -->
     <div class="score wrapper">
       <canvas id="canvasCircle" width="200" height="40"></canvas>
     </div>
-    <p id="goal" class="goal" style="display: none;">
-      <span class="red">■</span> × <span id="scores.red"></span> 
-      <span class="blue">■</span> × <span id="scores.blue"></span> 
-      <span class="green">■</span> × <span id="scores.green"></span>
+
+    <!-- ターゲットスコア描画 -->
+    <p id="goal">
+      <span class="red">■</span> × <span id="scores.red">?</span> 
+      <span class="blue">■</span> × <span id="scores.blue">?</span> 
+      <span class="green">■</span> × <span id="scores.green">?</span>
     </p>
+
     <div class="buttons wrapper">
       <button id="play" class="btn">Play</button>
       <button id="quit" class="btn" style="display: none;">Quit</button>
     </div>
-    <div class="big-fonts">
-      <span id="result"></span>
-    </div>
+
+    <!-- <footer>
+        <div class="copyright selectable">
+            <small>&copy; Daiki Imai</small>
+        </div>
+    </footer> -->
   </body>
 </html>
