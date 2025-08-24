@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+body {
+    font-family: Philosopher;
+    /* background-color: #13325d; */
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.score {
+    margin-bottom: 3rem;
+}
+
+.buttons {
+    gap: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* .btn {
+    
+} */
+
+.goal {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+}
+
+.big-fonts {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 50px;
+}
+
+.red { color: #ff5252}
+
+.blue { color: #7192f5; }
+
+.green { color: #30cf8a; }
