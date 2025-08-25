@@ -50,13 +50,13 @@
 
     <!-- 盤面描画 -->
     <div class="wrapper">
-      <!-- SIZE * 50 + x (xは余白) -->
+      <!-- SIZE * tileSize + x (xは余白) -->
       <!-- SIZE=4 -->
-      <!-- <canvas id="canvas" width="360" height="250"></canvas> -->
+      <canvas id="canvas4" width="360" height="370" style="display: none;"></canvas>
       <!-- SIZE=5 -->
-      <canvas id="canvas" width="420" height="310"></canvas>
+      <canvas id="canvas5" width="420" height="370"></canvas>
       <!-- SIZE=6 -->
-      <!-- <canvas id="canvas" width="480" height="370"></canvas> -->
+      <canvas id="canvas6" width="480" height="370" style="display: none;"></canvas>
     </div>
 
     <!-- 得点描画 -->
@@ -72,8 +72,10 @@
     </p>
 
     <div class="buttons wrapper">
-      <button id="play" class="btn">Play</button>
-      <button id="quit" class="btn" style="display: none;">Quit</button>
+      <button id="dec">&#60;</button>
+      <button id="play">Play 5×5</button>
+      <button id="inc">&#62;</button>
+      <button id="quit" style="display: none;">Quit</button>
     </div>
 
     <!-- <footer>

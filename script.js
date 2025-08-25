@@ -1,8 +1,13 @@
 "use strict";
 
-const SIZE = 5;
 const data = [];
+const MIN_SIZE = 4;
+const MAX_SIZE = 6;
 
+const decBtn = document.getElementById("dec");
+const incBtn = document.getElementById("inc");
+
+let SIZE = 5;
 let gc = null;
 let initialPx, initialPy;
 let px, py;
@@ -44,7 +49,7 @@ function getRandomEmptyPosition() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    gc = document.getElementById("canvas").getContext("2d");
+    gc = document.getElementById("canvas5").getContext("2d");
     for (let y = 0; y < SIZE + 2; y++) {
         let row = [];
         for (let x = 0; x < SIZE + 2; x++) {
@@ -157,7 +162,54 @@ document.addEventListener("DOMContentLoaded", () => {
     mask3.addEventListener("click", () => {
         closeRankingButton.dispatchEvent(new PointerEvent("click"));
     });
+
+    // 盤面のサイズを1小さく
+    decBtn.addEventListener("click", () => {
+        if (SIZE > 4) switchSize(SIZE - 1);
+    });
+
+    // 盤面のサイズを1大きく
+    incBtn.addEventListener("click", () => {
+        if (SIZE < 6) switchSize(SIZE + 1);
+    });
 });
+
+function switchSize(newSize) {
+    SIZE = newSize;
+
+    // dataを新しいサイズに初期化
+    data.length = 0; // 既存のdataをクリア
+    for (let y = 0; y < SIZE + 2; y++) {
+        let row = [];
+        for (let x = 0; x < SIZE + 2; x++) {
+            row.push(x === 0 || x === SIZE + 1 || y === 0 || y === SIZE + 1 ? 6 : 0);
+        }
+        data.push(row);
+    }
+
+    // キャンバスを切り替え
+    document.getElementById("canvas4").style.display = SIZE === 4 ? "block" : "none";
+    document.getElementById("canvas5").style.display = SIZE === 5 ? "block" : "none";
+    document.getElementById("canvas6").style.display = SIZE === 6 ? "block" : "none";
+
+    // それ以上リサイズできない場合はボタンを無効化
+    if (SIZE <= MIN_SIZE) {
+        decBtn.classList.add("disabled");
+    } else {
+        decBtn.classList.remove("disabled");
+    }
+
+    if (SIZE >= MAX_SIZE) {
+        incBtn.classList.add("disabled");
+    } else {
+        incBtn.classList.remove("disabled");
+    }
+
+    gc = document.getElementById("canvas" + SIZE).getContext("2d");
+    document.getElementById("play").textContent = "Play " + SIZE + "×" + SIZE;
+
+    repaint();
+}
 
 function initializeGame() {
     initialColorPoints = [];
@@ -178,7 +230,9 @@ function startGame() {
         isPlaying = true;
         startTime = Date.now();
         initializeGame();
-        document.getElementById("play").style.display = "none"; 
+        document.getElementById("play").style.display = "none";
+        document.getElementById("inc").style.display = "none";
+        document.getElementById("dec").style.display = "none";
         document.getElementById("quit").style.display = "block"; 
         requestAnimationFrame(loop);
     }
@@ -439,6 +493,8 @@ function quitGame() {
 
     document.getElementById("quit").style.display = "none";
     document.getElementById("play").style.display = "block";
+    document.getElementById("inc").style.display = "block";
+    document.getElementById("dec").style.display = "block";
     document.getElementById("scores.red").textContent = "?";
     document.getElementById("scores.blue").textContent = "?";
     document.getElementById("scores.green").textContent = "?";

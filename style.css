@@ -65,7 +65,7 @@ button {
     padding-bottom: 0.2rem;
 }
 
-#closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover {
+#closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover, #inc:hover, #dec:hover {
     background-color: #13325d;
 }
 
@@ -83,7 +83,7 @@ button {
 }
 
 .score {
-    margin: 1.5rem 0 1.5rem;
+    margin: 1rem 0 1.5rem;
 }
 
 #goal {
@@ -94,7 +94,7 @@ button {
 }
 
 .buttons {
-    gap: 4rem;
+    gap: 3rem;
     margin-bottom: 1rem;
 }
 
@@ -102,7 +102,19 @@ button {
     background-color: #3964a1;
     font-size: 2rem;
     height: 40px;
-    width: 80px;
+    width: 150px;
+}
+
+#inc, #dec {
+    background-color: #3964a1;
+    font-size: 1.5rem;
+    height: 40px;
+    width: 40px;
+}
+
+#inc.disabled, #dec.disabled {
+    background-color: #ddd; 
+    cursor: auto;
 }
 
 #quit {
