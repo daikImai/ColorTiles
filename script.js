@@ -10,6 +10,7 @@ let playerColor = 0; // 0: none, 1: red, 2: blue, 3: green
 let initialColorPoints = [];
 let colorPoints = [11, 22, 33]; // 11: red, 22: blue, 33: green
 let targetScores = { red: 0, blue: 0, green: 0 };
+let isHidden = false;
 let isAnimating = false;
 let isPlaying = false;
 let isGameOver = false;
@@ -62,6 +63,18 @@ document.addEventListener("DOMContentLoaded", () => {
             startGame();
             window.addEventListener("keydown", mykeydown);
         }
+    });
+
+    // 非表示ボタン
+    document.getElementById("toggleResult").addEventListener("click", () => {
+        if (!isHidden) { // 非表示にする
+            document.getElementById("toggleResult").innerHTML = '<i class="fa-solid fa-eye-slash"></i>'; // 斜線付き
+            document.getElementById("result").innerHTML = '- <i class="fa-solid fa-hourglass-half"></i> -- : --';
+        } else { // 表示する
+            document.getElementById("toggleResult").innerHTML = '<i class="fa-solid fa-eye"></i>'; // 斜線なし
+            document.getElementById("result").innerHTML = countTotal + ' <i class="fa-solid fa-hourglass-half"></i> ' + formatTime(elapsedTime);
+        }
+        isHidden = !isHidden;
     });
 
     // マイページ
@@ -342,7 +355,7 @@ function repaint(tileSize=60) {
         gc.fillText("Game Over", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
     }
 
-    document.getElementById("result").textContent = countTotal + " ⌛" + formatTime(elapsedTime);
+    if (!isHidden) document.getElementById("result").innerHTML = countTotal + ' <i class="fa-solid fa-hourglass-half"></i> ' + formatTime(elapsedTime);
 }
 
 function check() {
