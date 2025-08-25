@@ -45,7 +45,7 @@ button {
 #myPageModal, #howToPlayModal, #rankingModal {
     width: 400px;
     height: 700px;
-    padding: 0.5rem 0.7rem 1.5rem;
+    padding: 0.5rem 2rem 1.5rem;
     background-color: white;
     border-radius: 16px;
     position: absolute;
@@ -58,7 +58,7 @@ button {
 
 #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
     position: absolute;
-    bottom: 1.7rem;
+    bottom: 1.2rem;
     height: 30px;
     width: 60px;
     font-size: 0.9rem;
@@ -67,6 +67,19 @@ button {
 
 #closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover, #inc:hover, #dec:hover {
     background-color: #13325d;
+}
+
+section h2 {
+    text-align: center;
+    text-decoration: underline;
+    margin-bottom: 1.5rem;
+}
+
+.howToImg {
+    margin-top: -0.5rem;
+    height: 280px;
+    text-align: center;
+    margin-bottom: 0.5rem;
 }
 
 .results {
