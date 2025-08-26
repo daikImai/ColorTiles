@@ -197,6 +197,57 @@ app.post('/api/save-result', async (req, res) => {
   }
 });
 
+/** --- API: ユーザデータ取得 --- **/
+app.get('/api/user-stats', requireAuth, async (req, res) => {
+  const userId = req.session.userId;
+
+  try {
+    // 最大perfect_per_gameを取得
+    const perfectPerGameResult = await pool.query(`
+      SELECT board_size, MAX(perfect) AS perfect_per_game
+      FROM results
+      WHERE user_id = $1
+      GROUP BY board_size
+    `, [userId]);
+
+    // perfect_totalを取得
+    const perfectTotalResult = await pool.query(`
+      SELECT board_size, perfect_total
+      FROM perfect_total
+      WHERE user_id = $1
+    `, [userId]);
+
+    // 最良スコア（全期間）
+    const bestScoreResult = await pool.query(`
+      SELECT DISTINCT ON (board_size) board_size, count, time
+      FROM results
+      WHERE user_id = $1
+      ORDER BY board_size, count ASC, time ASC
+    `, [userId]);
+
+    // 最良スコア（今週）
+    const weekStart = new Date();
+    weekStart.setHours(0,0,0,0);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時
+    const bestWeekScoreResult = await pool.query(`
+      SELECT DISTINCT ON (board_size) board_size, count, time
+      FROM results
+      WHERE user_id = $1 AND created_at >= $2
+      ORDER BY board_size, count ASC, time ASC
+    `, [userId, weekStart]);
+
+    res.json({
+      perfectPerGame: perfectPerGameResult.rows, 
+      perfectTotal: perfectTotalResult.rows,
+      bestScore: bestScoreResult.rows,
+      bestWeekScore: bestWeekScoreResult.rows
+    });
+
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ error: 'DB error' });
+  }
+});
 
 /** --- エラーハンドリング --- **/
 app.use((err, _req, res, _next) => {
