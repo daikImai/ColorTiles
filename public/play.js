@@ -56,7 +56,7 @@ async function fetchUser() {
         console.log('ログインユーザー情報:', currentUserId, currentUsername);
     } catch (err) {
         console.error(err);
-        alert('ログイン状態が無効です。再ログインしてください。');
+        alert('Invalid session. Redirecting to home page.');
         window.location.href = '/';
     }
 }
@@ -112,6 +112,89 @@ document.addEventListener("DOMContentLoaded", () => {
         mask1.style.visibility = "visible";
         myPageModal.animate(showListKeyframes, options);
         mask1.animate(showListKeyframes, options);
+
+        if (currentUserId != 0) { // ログイン状態であれば
+            try {
+                const res = await fetch('/api/user-stats', { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Failed to fetch stats');
+                const data = await res.json();
+
+                document.getElementById('show-username').textContent = `${currentUsername}`; // ユーザーネーム表示
+                document.getElementById('container').style.display = 'block'; 
+                const container = document.getElementById('stats-container');
+
+                function renderBoardSize(size) {
+                    const best = data.bestScore.find(r => r.board_size === size) || {};
+                    const bestWeek = data.bestWeekScore.find(r => r.board_size === size) || {};
+                    const perfectTotal = data.perfectTotal.find(r => r.board_size === size)?.perfect_total || 0;
+                    const perfectPerGame = data.perfectPerGame.find(r => r.board_size === size)?.perfect_per_game || 0;
+
+                    container.innerHTML = `
+                        <li>Best Score (All Time): </li>
+                        <span class="result-holder wrapper">Count: ${best.count || '--'} / Time: ${best.time != null ? formatTime(best.time) : '--:--'}</span>
+                        <li>Best Score (This Week): </li>
+                        <span class="result-holder wrapper">Count: ${bestWeek.count || '--'} / Time: ${bestWeek.time != null ? formatTime(bestWeek.time) : '--:--'}</span>
+                        <li>Max Perfect Per Game: ${perfectPerGame}</li>
+                        <li>Perfect Total: ${perfectTotal}</li>
+                    `;
+                }
+
+                // タブクリック時に切り替え
+                document.querySelectorAll('#tabs th').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // まず全タブから tab-selected クラスを削除
+                        document.querySelectorAll('#tabs th').forEach(t => t.classList.remove('tab-selected'));
+                        // クリックされたタブに追加
+                        tab.classList.add('tab-selected');
+                        // 実際の切り替え処理
+                        renderBoardSize(Number(tab.dataset.size));
+                    });
+                });
+
+                // 初期表示は5x5
+                document.querySelector('#tabs th[data-size="4"]').classList.remove('tab-selected');
+                document.querySelector('#tabs th[data-size="5"]').classList.add('tab-selected');
+                document.querySelector('#tabs th[data-size="6"]').classList.remove('tab-selected');
+                renderBoardSize(5);
+
+                // ログアウト処理
+                document.getElementById('log-out').addEventListener('click', async () => {
+                    try {
+                        // CSRFトークンを取得
+                        const csrfRes = await fetch("/api/csrf-token");
+                        const csrfData = await csrfRes.json();
+                        const csrfToken = csrfData.csrfToken;
+
+                        const res = await fetch('/api/logout', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'CSRF-Token': csrfToken
+                            }
+                        });
+                        const data = await res.json();
+                        if (data.ok) {
+                            alert('Logout Successful!');
+                            window.location.href = '/'; // ログアウト成功 → トップページに戻す
+                        } else {
+                            alert('Logout Failed');
+                        }
+                    } catch (err) {
+                        console.error('logout error:', err);
+                        alert('Server Error');
+                    }
+                });
+            } catch(err) {
+                console.error(err);
+            }
+        } else { // 未ログイン状態であれば
+            document.getElementById('show-username').style.display = 'none'; 
+            document.getElementById('if-not-loggedin').style.display = 'block'; 
+            document.getElementById('log-out').textContent = 'Log In >>'
+            document.getElementById('log-out').addEventListener('click', async () => {
+                window.location.href = '/';
+            });
+        }
     });
 
     // マイページの「閉じる」ボタン

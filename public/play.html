@@ -21,6 +21,17 @@
 
     <!-- マイページモーダル -->
     <section id="myPageModal">
+      <h2 id="show-username"></h2>
+      <p id="if-not-loggedin" style="display: none;">ログイン情報がありません。<br>ログインをすると、記録を閲覧することが<br>できます。</p>
+      <div id="container" style="display: none;">
+        <table id="tabs" class="wrapper">
+          <th data-size="4">4×4</th>
+          <th data-size="5" class="tab-selected">5×5</th>
+          <th data-size="6">6×6</th>
+        </table>
+        <ul id="stats-container"></ul>
+      </div>
+      <p id="log-out">Log Out >></p>
       <div class="wrapper">
         <button id="closeMyPageButton">閉じる</button>
       </div>
@@ -29,7 +40,7 @@
 
     <!-- 遊び方モーダル -->
     <section id="howToPlayModal">
-      <h2>遊び方</h2>
+      <h2>Color Tiles</h2>
       <p>与えられた色の数の組み合わせで、ぴったりタイルを塗りましょう。</p>
       <p class="wrapper"><img src="images/howToPlay.png" alt="How To Play" class="howToImg"></p>
       <p>一度他の色を取ると、元の色に戻ることはできません。同じ色のタイルへは移動できますが、異なる色のタイルへは移動できません。</p>

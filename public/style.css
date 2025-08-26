@@ -58,7 +58,7 @@ button {
 
 #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
     position: absolute;
-    bottom: 1.2rem;
+    bottom: 1.5rem;
     height: 30px;
     width: 60px;
     font-size: 0.9rem;
@@ -71,13 +71,74 @@ button {
 
 section h2 {
     text-align: center;
+    font-weight: normal;
+    font-size: 2rem;
+    margin-top: 2rem;
+}
+
+#if-not-loggedin {
+    text-align: center;
+    margin-top: 17rem;
+    font-size: 1.3rem;
+    margin-bottom: 5rem;
+}
+
+#container {
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    margin: 2rem auto;
+    padding-bottom: 0.5rem;
+}
+
+#tabs {
+    border-spacing: 0;
+}
+
+#tabs th {
+    font-weight: normal;
+    text-align: center;
+    padding: 0.5rem 3rem;
+    border-bottom: 2px solid #ddd;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.tab-selected {
+    background-color: #ddd;
+    border-radius: 5px 5px 0 0;
+}
+
+#stats-container {
+    font-size: 1.5rem;
+}
+
+#stats-container li {
+    margin: 1.2rem 0;
+}
+
+.result-holder {
+    align-items: center;
+    background-color: #d0e2fa;
+    border-radius: 10px;
+    height: 50px;
+    width: 320px;
+}
+
+#log-out {
+    text-align: right;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#log-out:hover {
+    color: #13325d;
     text-decoration: underline;
-    margin-bottom: 1.5rem;
 }
 
 .howToImg {
     margin-top: -0.5rem;
-    height: 280px;
+    height: 250px;
     text-align: center;
     margin-bottom: 0.5rem;
 }
