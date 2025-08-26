@@ -123,8 +123,8 @@ app.post('/api/register', authLimiter, async (req, res) => {
     if (r.rowCount > 0) return res.status(409).json({ error: 'username already exists.' });
 
     const hash = await bcrypt.hash(password, SALT_ROUNDS);
-    const q = await pool.query(`INSERT INTO users (username, password_hash, perfect_per_game, perfect_total) 
-      VALUES($1, $2, 0, 0) RETURNING id, username`, [username, hash]);
+    const q = await pool.query(`INSERT INTO users (username, password_hash) 
+      VALUES($1, $2) RETURNING id, username`, [username, hash]);
 
     const user = q.rows[0];
     req.session.userId = user.id;
@@ -158,6 +158,45 @@ app.get('/api/me', async (req, res) => {
   if (q.rowCount === 0) return res.json({ user: { id: 0, username: 'unknown' } }); // 未ログイン
   res.json({ user: q.rows[0] });
 });
+
+/** --- API: 結果保存 --- **/
+app.post('/api/save-result', async (req, res) => {
+  const { count, time, boardSize, perfect } = req.body;
+  if (!count || !time || !boardSize || !perfect) {
+    return res.status(400).json({ success: false, message: 'Invalid parameters' });
+  }
+
+  try {
+    await pool.query('BEGIN'); // トランザクション開始
+
+    const perfectCount = perfect.filter(p => p === 2).length; // perfect数を計算
+    
+    await pool.query( // resultsテーブルの更新
+      `INSERT INTO results (user_id, count, time, perfect, board_size) 
+       VALUES ($1, $2, $3, $4, $5)`,
+      [req.session.userId, count, time, perfectCount, boardSize]
+    );
+
+    if (perfectCount > 0 && req.session.userId) { // perfect_totalテーブルの更新
+      await pool.query(
+        `INSERT INTO perfect_total (user_id, board_size, perfect_total)
+         VALUES ($1, $2, $3)
+         ON CONFLICT (user_id, board_size) 
+         DO UPDATE SET perfect_total = perfect_total.perfect_total + $3`,
+        [req.session.userId, boardSize, perfectCount]
+      );
+    }
+
+    await pool.query('COMMIT'); // トランザクション確定
+
+    res.json({ success: true });
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.error('DB error:', err);
+    res.status(500).json({ success: false, message: 'DB error' });
+  }
+});
+
 
 /** --- エラーハンドリング --- **/
 app.use((err, _req, res, _next) => {

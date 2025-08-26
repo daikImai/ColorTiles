@@ -264,7 +264,7 @@ function startGame() {
 
 function loop() {
     if (isPlaying && !isGameOver && !isGameCleared) {
-        elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        elapsedTime = (Date.now() - startTime) / 1000; // x.xxx 秒
     }
     repaint();
 
@@ -276,7 +276,7 @@ function loop() {
 
 function formatTime(seconds) {
     const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
+    const sec = Math.floor(seconds % 60);
     const mm = String(min).padStart(2, '0');
     const ss = String(sec).padStart(2, '0');
     return `${mm}:${ss}`;
@@ -459,6 +459,7 @@ function check() {
         if (totalScore == 5) { // 5連続クリアしたら
             isGameCleared = true;
             isPlaying = false;
+            saveResult(countTotal, elapsedTime, SIZE, perfect); // クリア時に結果を保存
         } else {
             nextGame();
         }
@@ -466,6 +467,34 @@ function check() {
         // ターゲットスコアを超える/動けない/色が足りない場合はゲームオーバー
         isGameOver = true;
         isPlaying = false;
+    }
+}
+
+// 結果保存
+async function saveResult(count, time, boardSize, perfect) {
+    try {
+        // CSRFトークンを取得
+        const csrfRes = await fetch("/api/csrf-token");
+        const csrfData = await csrfRes.json();
+        const csrfToken = csrfData.csrfToken;
+
+        const res = await fetch('/api/save-result', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ count, time, boardSize, perfect }),
+        });
+        const data = await res.json();
+        if (!data.success) {
+            console.error('DB error:', data.message);
+        } else {
+            console.log('DB updated success!');
+        }
+    } catch (err) {
+        console.error('DB error:', err);
     }
 }
 
