@@ -7,6 +7,8 @@ const MAX_SIZE = 6;
 const decBtn = document.getElementById("dec");
 const incBtn = document.getElementById("inc");
 
+let currentUserId = null;
+let currentUsername = "unknown";
 let SIZE = 5;
 let gc = null;
 let initialPx, initialPy;
@@ -39,6 +41,26 @@ const options = {
     fill: 'forwards',
 };
 
+async function fetchUser() {
+    try {
+        const res = await fetch('/api/me', {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'same-origin', // セッション cookie を送信
+        });
+        if (!res.ok) throw new Error('unauthenticated');
+        const data = await res.json();
+        currentUserId = data.user.id;
+        currentUsername = data.user.username;
+        console.log('ログインユーザー情報:', currentUserId, currentUsername);
+    } catch (err) {
+        console.error(err);
+        alert('ログイン状態が無効です。再ログインしてください。');
+        window.location.href = '/';
+    }
+}
+
 function getRandomEmptyPosition() {
     let x, y;
     do {
@@ -49,6 +71,8 @@ function getRandomEmptyPosition() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    fetchUser(); // ログインユーザー情報を取得
+
     gc = document.getElementById("canvas5").getContext("2d");
     for (let y = 0; y < SIZE + 2; y++) {
         let row = [];
