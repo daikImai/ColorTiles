@@ -16,5 +16,10 @@
     "url": "https://github.com/daikImai/ColorTiles/issues"
   },
   "homepage": "https://github.com/daikImai/ColorTiles#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
 }
