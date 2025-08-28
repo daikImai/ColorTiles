@@ -101,7 +101,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
     req.session.userId = user.id;
     req.session.username = user.username;
 
-    res.json({ success:true });
+    res.json({ ok: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'server error' });
@@ -111,15 +111,17 @@ app.post('/api/login', authLimiter, async (req, res) => {
 /** --- API: ユーザー登録 --- **/
 app.post('/api/register', authLimiter, async (req, res) => {
   try {
-    const { username, password } = req.body || {};
+    const { username, password, passwordConfirm } = req.body || {};
 
     // 入力必須
-    if (!username || !password) {
+    if (!username || !password || !passwordConfirm) {
       return res.status(400).json({ error: 'All fields must be filled out.' });
     } else if (username.length > 10) { // usernameは10文字以下
       return res.status(422).json({ error: 'username must be shorter than 10 letters.' });
     } else if (password.length < 6) { // passwordは6文字以上
       return res.status(422).json({ error: 'password must be longer than 6 letters.' });
+    } else if (password != passwordConfirm) { // パスワード一致確認
+      return res.status(422).json({ error: 'Passwords do not match.' });
     }
 
     // ユーザー名は重複不可
@@ -134,7 +136,7 @@ app.post('/api/register', authLimiter, async (req, res) => {
     req.session.userId = user.id;
     req.session.username = user.username;
 
-    res.json({ success: true });
+    res.json({ ok: true });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'server error' });
@@ -167,7 +169,7 @@ app.get('/api/me', async (req, res) => {
 app.post('/api/save-result', async (req, res) => {
   const { count, time, boardSize, perfect } = req.body;
   if (!count || !time || !boardSize || !perfect) {
-    return res.status(400).json({ success: false, message: 'Invalid parameters' });
+    return res.status(400).json({ ok: false, message: 'Invalid parameters' });
   }
 
   try {
@@ -193,11 +195,11 @@ app.post('/api/save-result', async (req, res) => {
 
     await pool.query('COMMIT'); // トランザクション確定
 
-    res.json({ success: true });
+    res.json({ ok: true });
   } catch (err) {
     await pool.query('ROLLBACK');
     console.error('DB error:', err);
-    res.status(500).json({ success: false, message: 'DB error' });
+    res.status(500).json({ ok: false, message: 'DB error' });
   }
 });
 

@@ -1,10 +1,19 @@
 "use strict";
 
+let drawLine1 = null;
+let drawLine2 = null;
+
 document.addEventListener("DOMContentLoaded", async () => {
     const user = await fetchUser();
     if (user.id > 0) {
         window.location.href = "/play"; // すでにログイン済みなら自動的に /play に移動
     }
+    
+    drawLine1 = document.getElementById("canvas1").getContext("2d");
+    drawLine2 = document.getElementById("canvas2").getContext("2d");
+    drawLine(drawLine1);
+    drawLine(drawLine2);
+
 
     // CSRFトークンを取得
     const csrfRes = await fetch("/api/csrf-token");
@@ -29,14 +38,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             const data = await res.json();
-            if (data.success) {
+            if (data.ok) {
+                alert("Login Successful!\nUsername: " + body.username);
                 window.location.href = "/play"; // ログイン成功 → ゲーム画面へ
             } else {
-                alert(data.error || "Login failed");
+                alert("Login Failed");
             }
         } catch (err) {
             console.error(err);
-            alert("Server error");
+            alert("Server Error");
         }
     });
 
@@ -58,15 +68,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
 
             const data = await res.json();
-            if (data.success) {
+            if (data.ok) {
+                alert("Registration Successful!\nUsername: " + body.username);
                 window.location.href = "/play"; 
             } else {
-                alert(data.error || "Register failed");
+                alert(data.error || "Register Failed");
             }
         } catch (err) {
             console.error(err);
-            alert("Server error");
+            alert("Server Error");
         }
+    });
+
+    // Test Play Without Login
+    document.getElementById("test-play").addEventListener("click", () => {
+        window.location.href = "/play";
     });
 
 });
@@ -85,4 +101,13 @@ async function fetchUser() {
     } catch (err) {
         console.error(err);
     }
+}
+
+// ORの表示キャンバス
+function drawLine(drawLine) { 
+    drawLine.strokeStyle = "#13325d";
+    drawLine.beginPath();
+    drawLine.moveTo(0, 10);
+    drawLine.lineTo(390, 10);
+    drawLine.stroke();
 }

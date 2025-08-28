@@ -5,23 +5,44 @@
         <title>ColorTiles - Login</title>
         <meta name="description" content="Fill the Tiles with Colors">
         <link rel="icon" type=image/png href="images\logo_colortiles.png">
-        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ress/dist/ress.min.css">
         <link rel="stylesheet" href="style.css">
         <script src="login.js" defer></script>
     </head>
     <body>
-        <h2>Login</h2>
-        <form id="loginForm">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-
-        <h2>Register</h2>
-        <form id="registerForm">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Register</button>
-        </form>
+        <div class="wrapper">
+            <img class="title-image" src="images/title_colortiles.png" alt="">
+        </div>
+        <div class="wrapper">
+            <section id="titleModal">
+                <p>Login >></p>
+                <form id="loginForm">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <div class="df">
+                        <input type="password" name="password" placeholder="Password" required>
+                        <button type="submit" class="submit-btn">Login</button>
+                    </div>
+                </form>
+                <div class="wrapper">
+                    <canvas id="canvas1" width="400" height="20"></canvas>
+                </div>
+                <p>Register >></p>
+                <form id="registerForm">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <div class="df">
+                        <input type="password" name="passwordConfirm" placeholder="Confirm Password" required>
+                        <button type="submit" class="submit-btn">Register</button>
+                    </div>
+                </form>
+                <div class="wrapper">
+                    <canvas id="canvas2" width="400" height="20"></canvas>
+                </div>
+                <p id="test-play">Test Play Without Login >></p>
+            </section>
+        </div>
     </body>
 </html>
