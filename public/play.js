@@ -85,11 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
     repaint();
     
     document.getElementById("play").addEventListener("click", startGame);
+    document.getElementById("quit").addEventListener("click", quitGame);
 
-    window.addEventListener("keydown", (e) => { // 矢印キー押下時もゲーム開始
-        const arrowKeys = [37, 38, 39, 40];
-        if (arrowKeys.includes(e.keyCode)) {
-            startGame();
+    window.addEventListener("keydown", (e) => {
+        if (e.code != "Space") return;
+
+        if (isGameOver || isGameCleared) {
+            quitGame(); // スペースキーでquit
+        } else if (!isPlaying) {
+            startGame(); // スペースキーでstart
             window.addEventListener("keydown", mykeydown);
         }
     });
@@ -157,7 +161,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderBoardSize(5);
 
                 // ログアウト処理
-                document.getElementById('log-out').addEventListener('click', async () => {
+                document.getElementById('log-out').addEventListener('click', async (e) => {
+                    e.preventDefault();
                     try {
                         // CSRFトークンを取得
                         const csrfRes = await fetch("/api/csrf-token");
@@ -173,8 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                         const data = await res.json();
                         if (data.ok) {
-                            alert('Logout Successful!');
                             window.location.href = '/'; // ログアウト成功 → トップページに戻す
+                            alert('Logout Successful!');
                         } else {
                             alert('Logout Failed');
                         }
@@ -401,6 +406,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // 盤面のサイズを1大きく
     incBtn.addEventListener("click", () => {
         if (SIZE < 6) switchSize(SIZE + 1);
+    });
+
+    // '<'と'>'でも
+    window.addEventListener("keydown", (e) => {
+        if (isPlaying || isGameOver || isGameCleared) return;
+        if (e.keyCode == 37 && SIZE > 4) switchSize(SIZE - 1);
+        else if (e.keyCode == 39 && SIZE < 6) switchSize(SIZE + 1);
     });
 });
 
@@ -700,7 +712,7 @@ async function saveResult(count, time, boardSize, perfect) {
             body: JSON.stringify({ count, time, boardSize, perfect }),
         });
         const data = await res.json();
-        if (!data.success) {
+        if (!data.ok) {
             console.error('DB error:', data.message);
         } else {
             console.log('DB updated success!');
@@ -823,5 +835,3 @@ function drawCircle() {
         ctx.stroke();
     }
 }
-
-document.getElementById("quit").addEventListener("click", quitGame);
