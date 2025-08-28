@@ -20,9 +20,17 @@ button {
     justify-content: center;
 }
 
+.margin-left {
+    margin-left: 0.32rem;
+}
+
+.margin-bottom {
+    margin-bottom: 1.5rem;
+}
+
 .headers {
     gap: 3rem;
-    margin-top: 2.5rem;
+    margin: 3.5rem 0;
     font-size: 1.2rem;
     color: #432;
 }
@@ -43,8 +51,8 @@ button {
 }
 
 #myPageModal, #howToPlayModal, #rankingModal {
-    width: 400px;
-    height: 700px;
+    width: 465px;
+    height: 730px;
     padding: 0.5rem 2rem 1.5rem;
     background-color: white;
     border-radius: 16px;
@@ -83,18 +91,19 @@ section h2 {
     margin-bottom: 5rem;
 }
 
-#container {
+#stats-container, #ranking-container {
     border: 2px solid #ddd;
     border-radius: 5px;
     margin: 2rem auto;
     padding-bottom: 0.5rem;
+    position: relative;
 }
 
-#tabs {
+.stats-tabs, .ranking-tabs {
     border-spacing: 0;
 }
 
-#tabs th {
+.stats-tabs th, .ranking-tabs th {
     font-weight: normal;
     text-align: center;
     padding: 0.5rem 3rem;
@@ -108,11 +117,12 @@ section h2 {
     border-radius: 5px 5px 0 0;
 }
 
-#stats-container {
+#stats {
     font-size: 1.5rem;
+    padding-left: 2.5rem;
 }
 
-#stats-container li {
+#stats li {
     margin: 1.2rem 0;
 }
 
@@ -136,11 +146,92 @@ section h2 {
     text-decoration: underline;
 }
 
+#howToPlayModal p {
+    margin-top: 1rem;
+}
+
 .howToImg {
-    margin-top: -0.5rem;
     height: 250px;
     text-align: center;
     margin-bottom: 0.5rem;
+}
+
+#ranking-title {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+#ranking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.ranking-holder {
+    display: flex;
+    align-items: center;
+    background-color: #d0e2fa;
+    border-radius: 10px;
+    height: 65px;
+    width: 340px;
+    font-size: 1.5rem;
+}
+
+.rank {
+    font-size: 2rem;
+    margin: 0 1.5rem;
+}
+
+.first {
+    background-color: #f8f3be;
+    padding-left: 0.18rem;
+}
+
+.second {
+    background-color: #dbdfdf;
+}
+
+.third {
+    background-color: #e7d9c8
+}
+
+#reload {
+    position: absolute;
+    top: 12.5%;
+    right: 28px;
+    transform: translateY(-12.5%);
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    background-color: #ddd;
+    padding-top: 0.2rem;
+    cursor: pointer;
+}
+
+#toWeekly, #toAllTime {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+#toWeekly {
+    left: -22px;
+}
+
+#toAllTime {
+    right: -22px;
+}
+
+#reload:hover, #toWeekly:hover, #toAllTime:hover {
+    background-color: #bbb;
 }
 
 .results {

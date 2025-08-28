@@ -120,16 +120,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await res.json();
 
                 document.getElementById('show-username').textContent = `${currentUsername}`; // ユーザーネーム表示
-                document.getElementById('container').style.display = 'block'; 
-                const container = document.getElementById('stats-container');
+                const stats = document.getElementById('stats');
 
-                function renderBoardSize(size) {
-                    const best = data.bestScore.find(r => r.board_size === size) || {};
-                    const bestWeek = data.bestWeekScore.find(r => r.board_size === size) || {};
-                    const perfectTotal = data.perfectTotal.find(r => r.board_size === size)?.perfect_total || 0;
-                    const perfectPerGame = data.perfectPerGame.find(r => r.board_size === size)?.perfect_per_game || 0;
+                function renderBoardSize(boardSize) {
+                    const best = data.bestScore.find(r => r.board_size === boardSize) || {};
+                    const bestWeek = data.bestWeekScore.find(r => r.board_size === boardSize) || {};
+                    const perfectTotal = data.perfectTotal.find(r => r.board_size === boardSize)?.perfect_total || 0;
+                    const perfectPerGame = data.perfectPerGame.find(r => r.board_size === boardSize)?.perfect_per_game || 0;
 
-                    container.innerHTML = `
+                    stats.innerHTML = `
                         <li>Best Score (All Time): </li>
                         <span class="result-holder wrapper">Count: ${best.count || '--'} / Time: ${best.time != null ? formatTime(best.time) : '--:--'}</span>
                         <li>Best Score (This Week): </li>
@@ -140,10 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 // タブクリック時に切り替え
-                document.querySelectorAll('#tabs th').forEach(tab => {
+                document.querySelectorAll('.stats-tabs th').forEach(tab => {
                     tab.addEventListener('click', () => {
                         // まず全タブから tab-selected クラスを削除
-                        document.querySelectorAll('#tabs th').forEach(t => t.classList.remove('tab-selected'));
+                        document.querySelectorAll('.stats-tabs th').forEach(t => t.classList.remove('tab-selected'));
                         // クリックされたタブに追加
                         tab.classList.add('tab-selected');
                         // 実際の切り替え処理
@@ -152,9 +151,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 // 初期表示は5x5
-                document.querySelector('#tabs th[data-size="4"]').classList.remove('tab-selected');
-                document.querySelector('#tabs th[data-size="5"]').classList.add('tab-selected');
-                document.querySelector('#tabs th[data-size="6"]').classList.remove('tab-selected');
+                document.querySelector('.stats-tabs th[data-size="4"]').classList.remove('tab-selected');
+                document.querySelector('.stats-tabs th[data-size="5"]').classList.add('tab-selected');
+                document.querySelector('.stats-tabs th[data-size="6"]').classList.remove('tab-selected');
                 renderBoardSize(5);
 
                 // ログアウト処理
@@ -189,6 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else { // 未ログイン状態であれば
             document.getElementById('show-username').style.display = 'none'; 
+            document.getElementById('stats-container').style.display = 'none'; 
             document.getElementById('if-not-loggedin').style.display = 'block'; 
             document.getElementById('log-out').textContent = 'Log In >>'
             document.getElementById('log-out').addEventListener('click', async () => {
@@ -249,6 +249,129 @@ document.addEventListener("DOMContentLoaded", () => {
         mask3.style.visibility = "visible";
         rankingModal.animate(showListKeyframes, options);
         mask3.animate(showListKeyframes, options);
+
+        try {
+            const res = await fetch('/api/get-ranking', { credentials: 'same-origin' });
+            if (!res.ok) throw new Error('Failed to fetch ranking');
+            const data = await res.json();
+            // console.log(data);
+
+            let thisWeek = data.thisWeek; // 週間ランキング
+            const weekStart = new Date();
+            weekStart.setHours(0, 0, 0, 0);
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            weekEnd.setHours(23, 59, 59, 999);
+            let allTime = data.allTime; // 累計ランキング
+            let currentBoardSize = 5;
+            let currentDataset = thisWeek;
+
+            const ranking = document.getElementById('ranking');
+            const reloadButton = document.getElementById('reload');
+            const toAllTimeButton = document.getElementById("toAllTime");
+            const toWeeklyButton = document.getElementById("toWeekly");
+
+            function renderRanking(boardSize, dataset) {
+                if (dataset == thisWeek) document.getElementById("ranking-title").textContent = `Weekly (${formatDate(weekStart)} - ${formatDate(weekEnd)})`;
+                else if (dataset == allTime) document.getElementById("ranking-title").textContent = `All Time`;
+                ranking.innerHTML = "";
+                const filtered = dataset.filter(r => r.board_size === boardSize);
+
+                for (let i = 0; i < 5; i++) {
+                    const player = filtered[i] || { username: "-", count: boardSize>4 ? "---" : "--", time: null };
+
+                    const rankDiv = document.createElement("div");
+                    rankDiv.classList.add("ranking-holder");
+
+                    // 1位〜3位は特別クラスを付与
+                    if (i == 0) rankDiv.classList.add("first");
+                    if (i == 1) rankDiv.classList.add("second");
+                    if (i == 2) rankDiv.classList.add("third");
+
+                    const rank = document.createElement("span");
+                    rank.classList.add("rank");
+                    rank.textContent = i + 1;
+
+                    const resultDiv = document.createElement("div");
+                    if (i == 0) resultDiv.classList.add("margin-left");
+
+                    const nameSpan = document.createElement("span");
+                    nameSpan.textContent = player.username;
+                    const resultSpan = document.createElement("span");
+                    resultSpan.textContent = `Count: ${player.count} / Time: ${player.time != null ? formatTime(player.time) : "--:--"}`;
+
+                    resultDiv.appendChild(nameSpan);
+                    resultDiv.appendChild(document.createElement("br"));
+                    resultDiv.appendChild(resultSpan);
+
+                    rankDiv.appendChild(rank);
+                    rankDiv.appendChild(resultDiv);
+
+                    ranking.appendChild(rankDiv);
+                }
+            }
+
+            // タブクリック時に切り替え
+            document.querySelectorAll('.ranking-tabs th').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.ranking-tabs th').forEach(t => t.classList.remove('tab-selected'));
+                    tab.classList.add('tab-selected');
+                    currentBoardSize = Number(tab.dataset.size);
+                    renderRanking(currentBoardSize, currentDataset);
+                });
+            });
+
+            // リロードボタン
+            reloadButton.addEventListener('click', async () => {
+                try {
+                    reloadButton.disabled = true; // リロード中はボタンを無効化
+                    
+                    const res = await fetch('/api/get-ranking', { credentials: 'same-origin' });
+                    if (!res.ok) throw new Error('Failed to fetch ranking');
+                    const data = await res.json();
+
+                    // 更新されたデータに置き換え
+                    allTime = data.allTime;
+                    thisWeek = data.thisWeek;
+                    if (currentDataset == thisWeek) currentDataset = thisWeek;
+                    else if (currentDataset == allTime) currentDataset = allTime;
+
+                    renderRanking(currentBoardSize, currentDataset);
+                } catch(err) {
+                    console.error(err);
+                } finally {
+                    reloadButton.disabled = false; // ボタンを再度有効化
+                }
+            });
+
+            // 累計ランキングへ
+            toAllTimeButton.addEventListener('click', () => {
+                toAllTimeButton.style.display = "none";
+                toWeeklyButton.style.display = "block";
+                currentDataset = allTime;
+                renderRanking(currentBoardSize, currentDataset);
+            })
+
+            // 週間ランキングへ
+            toWeeklyButton.addEventListener('click', () => {
+                toWeeklyButton.style.display = "none";
+                toAllTimeButton.style.display = "block";
+                currentDataset = thisWeek;
+                renderRanking(currentBoardSize, currentDataset);
+            })
+
+            // 初期表示は5x5かつ週間ランキング
+            document.querySelector('.ranking-tabs th[data-size="4"]').classList.remove('tab-selected');
+            document.querySelector('.ranking-tabs th[data-size="5"]').classList.add('tab-selected');
+            document.querySelector('.ranking-tabs th[data-size="6"]').classList.remove('tab-selected');
+            toWeeklyButton.style.display = "none";
+            toAllTimeButton.style.display = "block";
+            renderRanking(5, thisWeek);
+
+        } catch(err) {
+            console.error(err);
+        }
     });
 
     // ランキングの「閉じる」ボタン
@@ -363,6 +486,12 @@ function formatTime(seconds) {
     const mm = String(min).padStart(2, '0');
     const ss = String(sec).padStart(2, '0');
     return `${mm}:${ss}`;
+}
+
+function formatDate(date) {
+    const m = String(date.getMonth() + 1);
+    const d = String(date.getDate());
+    return `${m}/${d}`;
 }
 
 function setTargetScores() {

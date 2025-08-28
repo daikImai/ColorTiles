@@ -113,9 +113,13 @@ app.post('/api/register', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body || {};
 
-    // パスワードは6文字以上
-    if (!username || !password || password.length < 6) {
-      return res.status(400).json({ error: 'password must be longer than 6 letters.' });
+    // 入力必須
+    if (!username || !password) {
+      return res.status(400).json({ error: 'All fields must be filled out.' });
+    } else if (username.length > 10) { // usernameは10文字以下
+      return res.status(422).json({ error: 'username must be shorter than 10 letters.' });
+    } else if (password.length < 6) { // passwordは6文字以上
+      return res.status(422).json({ error: 'password must be longer than 6 letters.' });
     }
 
     // ユーザー名は重複不可
@@ -248,6 +252,64 @@ app.get('/api/user-stats', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'DB error' });
   }
 });
+
+/** --- API: ランキング取得 --- **/
+app.get('/api/get-ranking', async (req, res) => {
+  try {
+    const weekStart = new Date();
+    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時
+
+    // 累計ランキング
+    const allTimeResult = await pool.query(`
+      SELECT board_size, username, count, time
+      FROM (
+        SELECT 
+          r.board_size,
+          COALESCE(u.username, 'unknown') AS username,
+          r.count,
+          r.time,
+          ROW_NUMBER() OVER (
+            PARTITION BY r.board_size
+            ORDER BY r.count ASC, r.time ASC
+          ) AS rn
+        FROM results r
+        LEFT JOIN users u ON r.user_id = u.id
+      ) ranked
+      WHERE rn <= 5; -- top 5
+    `);
+
+    // 週間ランキング
+    const weekResult = await pool.query(`
+      SELECT board_size, username, count, time
+      FROM (
+        SELECT 
+          r.board_size,
+          COALESCE(u.username, 'unknown') AS username,
+          r.count,
+          r.time,
+          ROW_NUMBER() OVER (
+            PARTITION BY r.board_size
+            ORDER BY r.count ASC, r.time ASC
+          ) AS rn
+        FROM results r
+        LEFT JOIN users u ON r.user_id = u.id
+        WHERE r.created_at >= $1
+      ) ranked
+      WHERE rn <= 5; -- top 5
+    `, [weekStart]);
+
+    res.json({
+      allTime: allTimeResult.rows,
+      thisWeek: weekResult.rows
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'DB error' });
+  }
+});
+
 
 /** --- エラーハンドリング --- **/
 app.use((err, _req, res, _next) => {

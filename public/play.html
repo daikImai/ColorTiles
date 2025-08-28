@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ress/dist/ress.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="play.js" defer></script>
   </head>
@@ -23,13 +24,13 @@
     <section id="myPageModal">
       <h2 id="show-username"></h2>
       <p id="if-not-loggedin" style="display: none;">ログイン情報がありません。<br>ログインをすると、記録を閲覧することが<br>できます。</p>
-      <div id="container" style="display: none;">
-        <table id="tabs" class="wrapper">
+      <div id="stats-container">
+        <table class="stats-tabs wrapper">
           <th data-size="4">4×4</th>
           <th data-size="5" class="tab-selected">5×5</th>
           <th data-size="6">6×6</th>
         </table>
-        <ul id="stats-container"></ul>
+        <ul id="stats"></ul>
       </div>
       <p id="log-out">Log Out >></p>
       <div class="wrapper">
@@ -40,7 +41,7 @@
 
     <!-- 遊び方モーダル -->
     <section id="howToPlayModal">
-      <h2>Color Tiles</h2>
+      <h2 class="margin-bottom">Color Tiles</h2>
       <p>与えられた色の数の組み合わせで、ぴったりタイルを塗りましょう。</p>
       <p class="wrapper"><img src="images/howToPlay.png" alt="How To Play" class="howToImg"></p>
       <p>一度他の色を取ると、元の色に戻ることはできません。同じ色のタイルへは移動できますが、異なる色のタイルへは移動できません。</p>
@@ -54,6 +55,19 @@
 
     <!-- ランキングモーダル -->
     <section id="rankingModal">
+      <h2>Ranking</h2>
+      <div id="ranking-container">
+        <table class="ranking-tabs wrapper">
+          <th data-size="4">4×4</th>
+          <th data-size="5" class="tab-selected">5×5</th>
+          <th data-size="6">6×6</th>
+        </table>
+        <h3 id="ranking-title">Weekly</h3>
+        <div id="ranking"></div> 
+        <button id="reload"><i class="fas fa-sync-alt"></i></button>
+        <button id="toWeekly" style="display: none;">&#60;</button>
+        <button id="toAllTime">&#62;</button>
+      </div>
       <div class="wrapper">
         <button id="closeRankingButton">閉じる</button>
       </div>
