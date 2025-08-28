@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const data = await res.json();
             if (data.ok) {
-                alert("Login Successful!\nUsername: " + body.username);
+                alert("Login Successful!\nHello, " + body.username + "!");
                 window.location.href = "/play"; // ログイン成功 → ゲーム画面へ
             } else {
                 alert("Login Failed");
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const data = await res.json();
             if (data.ok) {
-                alert("Registration Successful!\nUsername: " + body.username);
+                alert("Registration Successful!\nHello, " + body.username + "!");
                 window.location.href = "/play"; 
             } else {
                 alert(data.error || "Register Failed");
