@@ -10,7 +10,9 @@ const incBtn = document.getElementById("inc");
 let currentUserId = null;
 let currentUsername = "unknown";
 let SIZE = 5;
+let board = null;
 let gc = null;
+let startX, startY;
 let initialPx, initialPy;
 let px, py;
 let playerColor = 0; // 0: none, 1: red, 2: blue, 3: green
@@ -74,7 +76,8 @@ function getRandomEmptyPosition() {
 document.addEventListener("DOMContentLoaded", () => {
     fetchUser(); // ログインユーザー情報を取得
 
-    gc = document.getElementById("canvas5").getContext("2d");
+    board = document.getElementById("canvas5");
+    gc = board.getContext("2d");
     for (let y = 0; y < SIZE + 2; y++) {
         let row = [];
         for (let x = 0; x < SIZE + 2; x++) {
@@ -88,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("play").addEventListener("click", startGame);
     document.getElementById("quit").addEventListener("click", quitGame);
 
-    window.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", (e) => {
         if (e.code != "Space" || isModalOpen) return;
 
         if (isGameOver || isGameCleared) {
@@ -457,6 +460,45 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.keyCode == 37 && SIZE > 4) switchSize(SIZE - 1);
         else if (e.keyCode == 39 && SIZE < 6) switchSize(SIZE + 1);
     });
+
+    // スワイプ操作
+    document.addEventListener("touchstart", function(e) {
+        if (!isPlaying || isGameOver || isGameCleared) return;
+        if (e.touches.length > 1) return; // マルチタッチは無視
+        if (!board.contains(e.target)) return; // board内のスワイプのみ
+        e.preventDefault();
+
+        const touchX = e.touches[0].clientX;
+        const touchY = e.touches[0].clientY;
+
+        startX = touchX;
+        startY = touchY;
+    }, { passive: false });
+    document.addEventListener("touchend", function(e) {
+        if (!isPlaying || isGameOver || isGameCleared) return;
+        if (!board.contains(e.target)) return;
+        e.preventDefault();
+
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const threshold = 30; // 最小スワイプ距離
+        let keyCode = null;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > threshold) keyCode = 39; // right
+            else if (dx < -threshold) keyCode = 37; // left
+        } else {
+            if (dy > threshold) keyCode = 40; // down
+            else if (dy < -threshold) keyCode = 38; // up
+        }
+
+        if (keyCode) {
+            mykeydown({ keyCode });
+        }
+    }, { passive: false });
 });
 
 function switchSize(newSize) {
@@ -490,7 +532,8 @@ function switchSize(newSize) {
         incBtn.classList.remove("disabled");
     }
 
-    gc = document.getElementById("canvas" + SIZE).getContext("2d");
+    board = document.getElementById("canvas" + SIZE);
+    gc = board.getContext("2d");
     document.getElementById("play").textContent = "Play " + SIZE + "×" + SIZE;
 
     repaint();
