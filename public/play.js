@@ -154,11 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 });
 
-                // 初期表示は5x5
-                document.querySelector('.stats-tabs th[data-size="4"]').classList.remove('tab-selected');
-                document.querySelector('.stats-tabs th[data-size="5"]').classList.add('tab-selected');
-                document.querySelector('.stats-tabs th[data-size="6"]').classList.remove('tab-selected');
-                renderBoardSize(5);
+                // 初期表示はその時点でのboardSize
+                document.querySelectorAll('.stats-tabs th[data-size]').forEach(th => {
+                    if (th.dataset.size == SIZE) {
+                        th.classList.add('tab-selected');
+                    } else {
+                        th.classList.remove('tab-selected');
+                    }
+                }); 
+                renderBoardSize(SIZE);
 
                 // ログアウト処理
                 document.getElementById('log-out').addEventListener('click', async (e) => {
@@ -366,13 +370,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 renderRanking(currentBoardSize, currentDataset);
             })
 
-            // 初期表示は5x5かつ週間ランキング
-            document.querySelector('.ranking-tabs th[data-size="4"]').classList.remove('tab-selected');
-            document.querySelector('.ranking-tabs th[data-size="5"]').classList.add('tab-selected');
-            document.querySelector('.ranking-tabs th[data-size="6"]').classList.remove('tab-selected');
+            // 初期表示はその時点でのboardSizeかつ週間ランキング
+            document.querySelectorAll('.ranking-tabs th[data-size]').forEach(th => {
+                if (th.dataset.size == SIZE) {
+                    th.classList.add('tab-selected');
+                } else {
+                    th.classList.remove('tab-selected');
+                }
+            }); 
             toWeeklyButton.style.display = "none";
             toAllTimeButton.style.display = "block";
-            renderRanking(5, thisWeek);
+            renderRanking(SIZE, thisWeek);
 
         } catch(err) {
             console.error(err);
