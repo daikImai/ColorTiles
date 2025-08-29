@@ -279,8 +279,8 @@ document.addEventListener("DOMContentLoaded", () => {
             weekEnd.setDate(weekEnd.getDate() + 6);
             weekEnd.setHours(23, 59, 59, 999);
             let allTime = data.allTime; // 累計ランキング
-            let currentBoardSize = 5;
-            let currentDataset = thisWeek;
+            let currentBoardSize = SIZE;
+            let currentDataset = "thisWeek";
 
             const ranking = document.getElementById('ranking');
             const reloadButton = document.getElementById('reload');
@@ -324,6 +324,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     rankDiv.appendChild(resultDiv);
 
                     ranking.appendChild(rankDiv);
+
+                    // ポップアップアニメーション
+                    requestAnimationFrame(() => {
+                        const holders = ranking.querySelectorAll(".ranking-holder");
+                        holders.forEach((el, idx) => {
+                            setTimeout(() => {
+                            el.classList.add("pop");
+                            setTimeout(() => el.classList.remove("pop"), 100); // 戻す
+                            }, idx * 70); // 遅れ
+                        });
+                    });
                 }
             }
 
@@ -333,7 +344,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.querySelectorAll('.ranking-tabs th').forEach(t => t.classList.remove('tab-selected'));
                     tab.classList.add('tab-selected');
                     currentBoardSize = Number(tab.dataset.size);
-                    renderRanking(currentBoardSize, currentDataset);
+                    if (currentDataset == "thisWeek") renderRanking(currentBoardSize, thisWeek);
+                    else if (currentDataset == "allTime") renderRanking(currentBoardSize, allTime);
                 });
             });
 
@@ -349,10 +361,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     // 更新されたデータに置き換え
                     allTime = data.allTime;
                     thisWeek = data.thisWeek;
-                    if (currentDataset == thisWeek) currentDataset = thisWeek;
-                    else if (currentDataset == allTime) currentDataset = allTime;
-
-                    renderRanking(currentBoardSize, currentDataset);
+                    if (currentDataset == "thisWeek") renderRanking(currentBoardSize, thisWeek);
+                    else if (currentDataset == "allTime") renderRanking(currentBoardSize, allTime);
                 } catch(err) {
                     console.error(err);
                 } finally {
@@ -364,16 +374,16 @@ document.addEventListener("DOMContentLoaded", () => {
             toAllTimeButton.addEventListener('click', () => {
                 toAllTimeButton.style.display = "none";
                 toWeeklyButton.style.display = "block";
-                currentDataset = allTime;
-                renderRanking(currentBoardSize, currentDataset);
+                currentDataset = "allTime";
+                renderRanking(currentBoardSize, allTime);
             })
 
             // 週間ランキングへ
             toWeeklyButton.addEventListener('click', () => {
                 toWeeklyButton.style.display = "none";
                 toAllTimeButton.style.display = "block";
-                currentDataset = thisWeek;
-                renderRanking(currentBoardSize, currentDataset);
+                currentDataset = "thisWeek";
+                renderRanking(currentBoardSize, thisWeek);
             })
 
             // 初期表示はその時点でのboardSizeかつ週間ランキング
@@ -698,6 +708,7 @@ function check() {
         if (totalScore == 5) { // 5連続クリアしたら
             isGameCleared = true;
             isPlaying = false;
+            document.getElementById("quit").textContent = "Back";
             saveResult(countTotal, elapsedTime, SIZE, perfect); // クリア時に結果を保存
         } else {
             nextGame();
@@ -784,6 +795,7 @@ function quitGame() {
     repaint();
 
     document.getElementById("quit").style.display = "none";
+    document.getElementById("quit").textContent = "Quit";
     document.getElementById("play").style.display = "block";
     document.getElementById("inc").style.display = "block";
     document.getElementById("dec").style.display = "block";
