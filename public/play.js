@@ -134,11 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     const perfectTotal = data.perfectTotal.find(r => r.board_size === boardSize)?.perfect_total || 0;
                     const perfectPerGame = data.perfectPerGame.find(r => r.board_size === boardSize)?.perfect_per_game || 0;
 
+                    let bestDisplay = `Count: ${best.count || '--'} / Time: ${best.time != null ? formatTime(best.time) : '--:--'}`;
+                    let bestWeekDisplay = `Count: ${best.count || '--'} / Time: ${bestWeek.time != null ? formatTime(bestWeek.time) : '--:--'}`;
+
+                    // 新記録なら "new" を追加
+                    if (isGameCleared) {
+                        if (best.count == countTotal && best.time == elapsedTime) bestDisplay += '<span class="new">new</span>';
+                        if (bestWeek.count == countTotal && bestWeek.time == elapsedTime) bestWeekDisplay += '<span class="new">new</span>';
+                    }
+
                     stats.innerHTML = `
                         <li>Best Score (All Time): </li>
-                        <span class="result-holder wrapper">Count: ${best.count || '--'} / Time: ${best.time != null ? formatTime(best.time) : '--:--'}</span>
+                        <span class="result-holder wrapper">${bestDisplay}</span>
                         <li>Best Score (This Week): </li>
-                        <span class="result-holder wrapper">Count: ${bestWeek.count || '--'} / Time: ${bestWeek.time != null ? formatTime(bestWeek.time) : '--:--'}</span>
+                        <span class="result-holder wrapper">${bestWeekDisplay}</span>
                         <li>Max Perfect Per Game: ${perfectPerGame}</li>
                         <li>Perfect Total: ${perfectTotal}</li>
                     `;

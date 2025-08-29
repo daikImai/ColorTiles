@@ -130,6 +130,14 @@ section h2 {
     margin-top: 2rem;
 }
 
+.new {
+    color: #ff5252;
+    font-size: 1.3rem;
+    position: absolute;
+    top: -0.4rem;
+    left: 0.4rem;
+}
+
 #if-not-loggedin {
     text-align: center;
     margin-top: 17rem;
@@ -179,6 +187,7 @@ section h2 {
     border-radius: 10px;
     height: 50px;
     width: 320px;
+    position: relative;
 }
 
 #log-out {
