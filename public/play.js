@@ -54,7 +54,7 @@ async function fetchUser() {
         const data = await res.json();
         currentUserId = data.user.id;
         currentUsername = data.user.username;
-        console.log('ログインユーザー情報:', currentUserId, currentUsername);
+        console.log('Login User:', currentUserId, currentUsername);
     } catch (err) {
         console.error(err);
         alert('Invalid session. Redirecting to home page.');
