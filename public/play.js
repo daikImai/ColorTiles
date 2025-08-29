@@ -17,6 +17,7 @@ let playerColor = 0; // 0: none, 1: red, 2: blue, 3: green
 let initialColorPoints = [];
 let colorPoints = [11, 22, 33]; // 11: red, 22: blue, 33: green
 let targetScores = { red: 0, blue: 0, green: 0 };
+let isModalOpen = false;
 let isHidden = false;
 let isAnimating = false;
 let isPlaying = false;
@@ -88,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("quit").addEventListener("click", quitGame);
 
     window.addEventListener("keydown", (e) => {
-        if (e.code != "Space") return;
+        if (e.code != "Space" || isModalOpen) return;
 
         if (isGameOver || isGameCleared) {
             quitGame(); // スペースキーでquit
@@ -112,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // マイページ
     myPageButton.addEventListener("click", async () => {
+        isModalOpen = true;
         myPageModal.style.visibility = "visible";
         mask1.style.visibility = "visible";
         myPageModal.animate(showListKeyframes, options);
@@ -217,6 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isAnimating = false;
             myPageModal.style.visibility = "hidden";
             mask1.style.visibility = "hidden";
+            isModalOpen = false;
         };
     });
 
@@ -227,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 遊び方
     howToPlayButton.addEventListener("click", async () => {
+        isModalOpen = true;
         howToPlayModal.style.visibility = "visible";
         mask2.style.visibility = "visible";
         howToPlayModal.animate(showListKeyframes, options);
@@ -244,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isAnimating = false;
             howToPlayModal.style.visibility = "hidden";
             mask2.style.visibility = "hidden";
+            isModalOpen = false;
         };
     });
 
@@ -254,6 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ランキング
     rankingButton.addEventListener("click", async () => {
+        isModalOpen = true;
         rankingModal.style.visibility = "visible";
         mask3.style.visibility = "visible";
         rankingModal.animate(showListKeyframes, options);
@@ -398,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
             isAnimating = false;
             rankingModal.style.visibility = "hidden";
             mask3.style.visibility = "hidden";
+            isModalOpen = false;
         };
     });
 
@@ -418,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // '<'と'>'でも
     window.addEventListener("keydown", (e) => {
-        if (isPlaying || isGameOver || isGameCleared) return;
+        if (isPlaying || isGameOver || isGameCleared || isModalOpen) return;
         if (e.keyCode == 37 && SIZE > 4) switchSize(SIZE - 1);
         else if (e.keyCode == 39 && SIZE < 6) switchSize(SIZE + 1);
     });
