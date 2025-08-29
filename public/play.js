@@ -322,6 +322,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const nameSpan = document.createElement("span");
                     nameSpan.textContent = player.username;
+
+                    // new判定
+                    if (isGameCleared && player.username == currentUsername && player.count == countTotal && player.time == elapsedTime) {
+                        const newBadge = document.createElement("span");
+                        newBadge.textContent = "new";
+                        newBadge.classList.add("new");
+                        nameSpan.appendChild(newBadge);
+                    }
+
                     const resultSpan = document.createElement("span");
                     resultSpan.textContent = `Count: ${player.count} / Time: ${player.time != null ? formatTime(player.time) : "--:--"}`;
 

@@ -134,8 +134,8 @@ section h2 {
     color: #ff5252;
     font-size: 1.3rem;
     position: absolute;
-    top: -0.4rem;
-    left: 0.4rem;
+    top: -0.8rem;
+    left: 1rem;
 }
 
 #if-not-loggedin {
