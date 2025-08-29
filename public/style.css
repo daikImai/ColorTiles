@@ -138,11 +138,12 @@ section h2 {
 }
 
 #stats-container, #ranking-container {
-    border: 2px solid #ddd;
+    border: 2px solid #ccc;
     border-radius: 5px;
     margin: 2rem auto;
     padding-bottom: 0.5rem;
     position: relative;
+    background-color: #f0f0f0;
 }
 
 .stats-tabs, .ranking-tabs {
@@ -153,13 +154,13 @@ section h2 {
     font-weight: normal;
     text-align: center;
     padding: 0.5rem 3rem;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid #ccc;
     font-size: 1.5rem;
     cursor: pointer;
 }
 
 .tab-selected {
-    background-color: #ddd;
+    background-color: #ccc;
     border-radius: 5px 5px 0 0;
 }
 
@@ -252,7 +253,7 @@ section h2 {
     width: 40px;
     height: 40px;
     font-size: 1.5rem;
-    background-color: #ddd;
+    background-color: #ccc;
     padding-top: 0.2rem;
     cursor: pointer;
 }
@@ -264,7 +265,7 @@ section h2 {
     width: 40px;
     height: 40px;
     font-size: 1.5rem;
-    background-color: #ddd;
+    background-color: #ccc;
     cursor: pointer;
 }
 
