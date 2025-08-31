@@ -50,7 +50,7 @@ async function fetchUser() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            credentials: 'same-origin', // セッション cookie を送信
+            credentials: 'include', // セッション cookie を送信
         });
         if (!res.ok) throw new Error('unauthenticated');
         const data = await res.json();
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (currentUserId != 0) { // ログイン状態であれば
             try {
-                const res = await fetch('/api/user-stats', { credentials: 'same-origin' });
+                const res = await fetch('/api/user-stats', { credentials: 'include' });
                 if (!res.ok) throw new Error('Failed to fetch stats');
                 const data = await res.json();
 
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mask3.animate(showListKeyframes, options);
 
         try {
-            const res = await fetch('/api/get-ranking', { credentials: 'same-origin' });
+            const res = await fetch('/api/get-ranking', { credentials: 'include' });
             if (!res.ok) throw new Error('Failed to fetch ranking');
             const data = await res.json();
             // console.log(data);
@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     reloadButton.disabled = true; // リロード中はボタンを無効化
                     
-                    const res = await fetch('/api/get-ranking', { credentials: 'same-origin' });
+                    const res = await fetch('/api/get-ranking', { credentials: 'include' });
                     if (!res.ok) throw new Error('Failed to fetch ranking');
                     const data = await res.json();
 
@@ -847,7 +847,7 @@ async function saveResult(count, time, boardSize, perfect) {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken
             },
-            credentials: 'same-origin',
+            credentials: 'include',
             body: JSON.stringify({ count, time, boardSize, perfect }),
         });
         const data = await res.json();
