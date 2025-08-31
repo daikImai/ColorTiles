@@ -17,7 +17,8 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS, 10);
 
 /** --- DB プール --- **/
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_ENV == 'render' ? { rejectUnauthorized: false } : false
 });
 
 /** --- 基本ミドルウェア --- **/
@@ -41,7 +42,7 @@ app.use(session({
   saveUninitialized: true, // CSRFトークンをログイン前に使いたい場合は true
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // 本番は HTTPS で true に
+    secure: process.env.NODE_ENV == 'production', // 本番は HTTPS で true に
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 1日
   }
