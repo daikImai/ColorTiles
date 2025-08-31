@@ -4,6 +4,8 @@
 ## Overview
 与えられた色の数の組み合わせで、ぴったりタイルを塗りましょう。
 
+例:
+
 <img src="./public/images/howToPlay.png" alt="Game Screen" width="200">
 
 一度他の色を取ると、元の色に戻ることはできません。同じ色のタイルへは移動できますが、異なる色のタイルへは移動できません。
@@ -14,7 +16,7 @@
 より少ない動作カウントとタイムでクリアして、ランキング上位を目指しましょう！
 
 ## Demo
-URL: 
+URL: https://colortiles.onrender.com
 
 ## Tech Stack
 - Frontend: HTML, CSS, JavaScript
