@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const perfectPerGame = data.perfectPerGame.find(r => r.board_size === boardSize)?.perfect_per_game || 0;
 
                     let bestDisplay = `Count: ${best.count || '--'} / Time: ${best.time != null ? formatTime(best.time) : '--:--'}`;
-                    let bestWeekDisplay = `Count: ${best.count || '--'} / Time: ${bestWeek.time != null ? formatTime(bestWeek.time) : '--:--'}`;
+                    let bestWeekDisplay = `Count: ${bestWeek.count || '--'} / Time: ${bestWeek.time != null ? formatTime(bestWeek.time) : '--:--'}`;
 
                     // 新記録なら "new" を追加
                     if (isGameCleared) {
@@ -539,18 +539,70 @@ function switchSize(newSize) {
     repaint();
 }
 
-function initializeGame() {
-    initialColorPoints = [];
-    for (let i = 0; i < 3; i++) {
-        let { x, y } = getRandomEmptyPosition();
-        data[y][x] = colorPoints[i];
-        initialColorPoints.push({ x, y, value: colorPoints[i] });
+function getColorFromValue(value) {
+    switch (value) {
+        case colorPoints[0]: return 'red';
+        case colorPoints[1]: return 'blue';
+        case colorPoints[2]: return 'green';
+        default: return null;
     }
+}
+
+// 盤面がクリア可能かチェック
+function isValidPosition(initialColorPoints, targetScores) {
+    // 四つ角チェック
+    const corners = [ 
+        [[1,1],[1,2],[2,1]],
+        [[1,SIZE],[1,SIZE-1],[2,SIZE]],
+        [[SIZE,1],[SIZE-1,1],[SIZE,2]],
+        [[SIZE,SIZE],[SIZE-1,SIZE],[SIZE,SIZE-1]],
+    ];
+
+    for (const corner of corners) {
+        if (corner.every(([y,x]) => data[y][x] != 0)) {
+            const cornerColor = getColorFromValue(data[corner[0][0]][corner[0][1]]);
+            if (cornerColor && targetScores[cornerColor] > 1) { // 角の色が2以上必要
+                return false; // クリア不可能
+            }
+        }
+    }
+
+    // 距離チェック
+    let isImpossibleCount = 0;
+    for (let i = 0; i < colorPoints.length; i++) {
+        let color = getColorFromValue(colorPoints[i]);
+        let tooFarCount = 0;
+
+        for (let j = 0; j < colorPoints.length; j++) {
+            if (i === j) continue; // 同じ色は無視
+            const minDist = Math.abs(initialColorPoints[i].x - initialColorPoints[j].x) +
+                         Math.abs(initialColorPoints[i].y - initialColorPoints[j].y);
+
+            if (targetScores[color] < minDist) tooFarCount++; // 遠くて届かない
+        }
+
+        if (tooFarCount == colorPoints.length-1) isImpossibleCount++; // 他の色すべてに届かない
+    }
+
+    if (isImpossibleCount >= 2) return false; // ある2色から届かない場合、クリア不可能
+
+    return true; // クリア可能
+}
+
+function initializeGame() {
+    setTargetScores();
+    do {
+        initialColorPoints = [];
+        for (let i = 0; i < colorPoints.length; i++) {
+            let { x, y } = getRandomEmptyPosition();
+            data[y][x] = colorPoints[i];
+            initialColorPoints.push({ x, y, value: colorPoints[i] });
+        }
+    } while (!isValidPosition(initialColorPoints, targetScores));
+
     ({ x: px, y: py } = getRandomEmptyPosition());
     initialPx = px;
     initialPy = py;
-
-    setTargetScores();
 }
 
 function startGame() {
@@ -593,7 +645,7 @@ function formatDate(date) {
 }
 
 function setTargetScores() {
-    let remainingScore = SIZE * SIZE - 3;
+    let remainingScore = SIZE * SIZE - colorPoints.length;
     targetScores.red = Math.floor(Math.random() * (remainingScore - 1)) + 1;
     remainingScore -= (targetScores.red - 1);
     targetScores.blue = Math.floor(Math.random() * (remainingScore - 1)) + 1;
