@@ -19,6 +19,7 @@ let playerColor = 0; // 0: none, 1: red, 2: blue, 3: green
 let initialColorPoints = [];
 let colorPoints = [11, 22, 33]; // 11: red, 22: blue, 33: green
 let targetScores = { red: 0, blue: 0, green: 0 };
+let isFetched = false;
 let isModalOpen = false;
 let isHidden = false;
 let isAnimating = false;
@@ -56,6 +57,7 @@ async function fetchUser() {
         const data = await res.json();
         currentUserId = data.user.id;
         currentUsername = data.user.username;
+        isFetched = true;
         console.log('Login User:', currentUserId, currentUsername);
     } catch (err) {
         console.error(err);
@@ -74,8 +76,6 @@ function getRandomEmptyPosition() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetchUser(); // ログインユーザー情報を取得
-
     board = document.getElementById("canvas5");
     gc = board.getContext("2d");
     for (let y = 0; y < SIZE + 2; y++) {
@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     repaint();
+    fetchUser(); // ログインユーザ情報を取得
     
     document.getElementById("play").addEventListener("click", startGame);
     document.getElementById("quit").addEventListener("click", quitGame);
@@ -116,6 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // マイページ
     myPageButton.addEventListener("click", async () => {
+        if (!isFetched) return; // ユーザネームを取得したら開けるように
         isModalOpen = true;
         myPageModal.style.visibility = "visible";
         mask1.style.visibility = "visible";
@@ -124,12 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (currentUserId != 0) { // ログイン状態であれば
             try {
+                document.getElementById('show-username').textContent = `${currentUsername}`; // ユーザネーム表示
                 const res = await fetch('/api/user-stats', { credentials: 'include' });
                 if (!res.ok) throw new Error('Failed to fetch stats');
                 const data = await res.json();
-
-                document.getElementById('show-username').textContent = `${currentUsername}`; // ユーザーネーム表示
-                const stats = document.getElementById('stats');
 
                 function renderBoardSize(boardSize) {
                     const best = data.bestScore.find(r => r.board_size === boardSize) || {};
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (bestWeek.count == countTotal && bestWeek.time == elapsedTime) bestWeekDisplay += '<span class="new">new</span>';
                     }
 
-                    stats.innerHTML = `
+                    document.getElementById("mypage-contents").innerHTML = `
                         <li>Best Score (All Time): </li>
                         <span class="result-holder wrapper">${bestDisplay}</span>
                         <li>Best Score (This Week): </li>
@@ -176,7 +176,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         th.classList.remove('tab-selected');
                     }
                 }); 
+                
                 renderBoardSize(SIZE);
+                document.getElementById("loading-mypage").style.display = "none"; // ローディングを消す
+                document.getElementById("mypage-contents").style.display = "block"; // 記録画面を表示
 
                 // ログアウト処理
                 document.getElementById('log-out').addEventListener('click', async (e) => {
@@ -232,6 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
             myPageModal.style.visibility = "hidden";
             mask1.style.visibility = "hidden";
             isModalOpen = false;
+            document.getElementById("mypage-contents").style.display = "none";
+            document.getElementById("loading-mypage").style.display = "";
         };
     });
 
@@ -373,7 +378,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // リロードボタン
             reloadButton.addEventListener('click', async () => {
                 try {
+                    if (reloadButton.disabled) return;
                     reloadButton.disabled = true; // リロード中はボタンを無効化
+                    document.getElementById("ranking-contents").style.display = "none";
+                    document.getElementById("loading-ranking").style.display = "";
                     
                     const res = await fetch('/api/get-ranking', { credentials: 'include' });
                     if (!res.ok) throw new Error('Failed to fetch ranking');
@@ -384,6 +392,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     thisWeek = data.thisWeek;
                     if (currentDataset == "thisWeek") renderRanking(currentBoardSize, thisWeek);
                     else if (currentDataset == "allTime") renderRanking(currentBoardSize, allTime);
+                    document.getElementById("loading-ranking").style.display = "none"; // ローディングを消す
+                    document.getElementById("ranking-contents").style.display = "block";
                 } catch(err) {
                     console.error(err);
                 } finally {
@@ -418,6 +428,8 @@ document.addEventListener("DOMContentLoaded", () => {
             toWeeklyButton.style.display = "none";
             toAllTimeButton.style.display = "block";
             renderRanking(SIZE, thisWeek);
+            document.getElementById("loading-ranking").style.display = "none"; // ローディングを消す
+            document.getElementById("ranking-contents").style.display = "block"; // ランキング画面を表示
 
         } catch(err) {
             console.error(err);
@@ -436,6 +448,8 @@ document.addEventListener("DOMContentLoaded", () => {
             rankingModal.style.visibility = "hidden";
             mask3.style.visibility = "hidden";
             isModalOpen = false;
+            document.getElementById("ranking-contents").style.display = "none";
+            document.getElementById("loading-ranking").style.display = "";
         };
     });
 

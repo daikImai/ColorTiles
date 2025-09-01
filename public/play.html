@@ -30,7 +30,14 @@
           <th data-size="5" class="tab-selected">5×5</th>
           <th data-size="6">6×6</th>
         </table>
-        <ul id="stats"></ul>
+        <div id="loading-mypage" class="wrapper">
+          <div class="circles-to-rhombuses-spinner">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+        </div>
+        <ul id="mypage-contents"></ul>
       </div>
       <p id="log-out">Log Out >></p>
       <div class="wrapper">
@@ -62,11 +69,20 @@
           <th data-size="5" class="tab-selected">5×5</th>
           <th data-size="6">6×6</th>
         </table>
-        <h3 id="ranking-title">Weekly</h3>
-        <div id="ranking"></div> 
-        <button id="reload"><i class="fas fa-sync-alt"></i></button>
-        <button id="toWeekly" style="display: none;">&#60;</button>
-        <button id="toAllTime">&#62;</button>
+        <div id="loading-ranking" class="wrapper">
+          <div class="circles-to-rhombuses-spinner">
+            <div class="circle"></div>
+            <div class="circle"></div>
+            <div class="circle"></div>
+          </div>
+        </div>
+        <div id="ranking-contents" style="display: none;">
+          <h3 id="ranking-title"></h3>
+          <div id="ranking"></div> 
+          <button id="reload"><i class="fas fa-sync-alt"></i></button>
+          <button id="toWeekly" style="display: none;">&#60;</button>
+          <button id="toAllTime">&#62;</button>
+        </div>
       </div>
       <div class="wrapper">
         <button id="closeRankingButton">閉じる</button>
