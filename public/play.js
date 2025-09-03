@@ -164,14 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // タブクリック時に切り替え
                 document.querySelectorAll('.stats-tabs th').forEach(tab => {
-                    tab.addEventListener('click', () => {
+                    tab.onclick = () => {
                         // まず全タブから tab-selected クラスを削除
                         document.querySelectorAll('.stats-tabs th').forEach(t => t.classList.remove('tab-selected'));
                         // クリックされたタブに追加
                         tab.classList.add('tab-selected');
                         // 実際の切り替え処理
                         renderBoardSize(Number(tab.dataset.size));
-                    });
+                    };
                 });
 
                 // 初期表示はその時点でのboardSize
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("mypage-contents").style.display = "block"; // 記録画面を表示
 
                 // ログアウト処理
-                document.getElementById('log-out').addEventListener('click', async (e) => {
+                document.getElementById('log-out').onclick = async (e) => {
                     e.preventDefault();
                     try {
                         // CSRFトークンを取得
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         console.error('logout error:', err);
                         alert('Server Error');
                     }
-                });
+                };
             } catch(err) {
                 console.error(err);
             }
@@ -223,9 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('stats-container').style.display = 'none'; 
             document.getElementById('if-not-loggedin').style.display = 'block'; 
             document.getElementById('log-out').textContent = 'Log In >>'
-            document.getElementById('log-out').addEventListener('click', async () => {
+            document.getElementById('log-out').onclick = async () => {
                 window.location.href = '/';
-            });
+            };
         }
     });
 
@@ -372,17 +372,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // タブクリック時に切り替え
             document.querySelectorAll('.ranking-tabs th').forEach(tab => {
-                tab.addEventListener('click', () => {
+                tab.onclick = () => {
                     document.querySelectorAll('.ranking-tabs th').forEach(t => t.classList.remove('tab-selected'));
                     tab.classList.add('tab-selected');
                     currentBoardSize = Number(tab.dataset.size);
                     if (currentDataset == "thisWeek") renderRanking(currentBoardSize, thisWeek);
                     else if (currentDataset == "allTime") renderRanking(currentBoardSize, allTime);
-                });
+                };
             });
 
             // リロードボタン
-            reloadButton.addEventListener('click', async () => {
+            reloadButton.onclick = async () => {
                 try {
                     if (reloadButton.disabled) return;
                     reloadButton.disabled = true; // リロード中はボタンを無効化
@@ -405,23 +405,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 } finally {
                     reloadButton.disabled = false; // ボタンを再度有効化
                 }
-            });
+            };
 
             // 累計ランキングへ
-            toAllTimeButton.addEventListener('click', () => {
+            toAllTimeButton.onclick = () => {
                 toAllTimeButton.style.display = "none";
                 toWeeklyButton.style.display = "block";
                 currentDataset = "allTime";
                 renderRanking(currentBoardSize, allTime);
-            })
+            };
 
             // 週間ランキングへ
-            toWeeklyButton.addEventListener('click', () => {
+            toWeeklyButton.onclick = () => {
                 toWeeklyButton.style.display = "none";
                 toAllTimeButton.style.display = "block";
                 currentDataset = "thisWeek";
                 renderRanking(currentBoardSize, thisWeek);
-            })
+            };
 
             // 初期表示はその時点でのboardSizeかつ週間ランキング
             document.querySelectorAll('.ranking-tabs th[data-size]').forEach(th => {
