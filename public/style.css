@@ -80,7 +80,7 @@ button {
 
 .headers {
     gap: 3rem;
-    margin: 1rem 0;
+    margin: 2rem 0 1rem;
     font-size: 1.1rem;
     color: #432;
 }
@@ -102,12 +102,12 @@ button {
 
 #myPageModal, #howToPlayModal, #rankingModal {
     width: 350px;
-    height: 690px;
+    height: 610px;
     padding: 0.5rem 1rem 1.5rem;
     background-color: white;
     border-radius: 16px;
     position: absolute;
-    inset: 1.2rem 0 auto;
+    inset: 1.5rem 0 auto;
     margin: auto;
     z-index: 9999;
     opacity: 0;
@@ -117,7 +117,7 @@ button {
 
 #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
     position: absolute;
-    bottom: 1.2rem;
+    bottom: 0.8rem;
     height: 30px;
     width: 60px;
     font-size: 0.9rem;
@@ -208,6 +208,7 @@ section h2 {
 
 #howToPlayModal p {
     margin-top: 0.5rem;
+    font-size: 0.9rem;
 }
 
 .howToImg {
@@ -219,15 +220,15 @@ section h2 {
 #ranking-title {
     text-align: center;
     font-size: 1.5rem;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 #ranking {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    margin: 1.5rem 0;
+    gap: 0.8rem;
+    margin: 1rem 0;
 }
 
 .ranking-holder {
@@ -235,7 +236,7 @@ section h2 {
     align-items: center;
     background-color: #d0e2fa;
     border-radius: 10px;
-    height: 65px;
+    height: 60px;
     width: 280px;
     font-size: 1.3rem;
     transform: scale(1);
@@ -324,7 +325,7 @@ section h2 {
 #goal {
     text-align: center;
     font-size: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     user-select: none;
 }
 
@@ -374,7 +375,7 @@ section h2 {
 }
 
 #loading-ranking {
-    padding: 14.77rem 0;
+    padding: 12.85rem 0;
 }
 
 .circles-to-rhombuses-spinner, .circles-to-rhombuses-spinner * {
@@ -522,11 +523,21 @@ section h2 {
 
     #howToPlayModal p {
         margin-top: 1rem;
+        font-size: 1rem;
     }
 
     .howToImg {
         height: 250px;
         margin: 0 0 0.5rem;
+    }
+
+    #ranking-title {
+        margin-top: 1.5rem;
+    }
+
+    #ranking {
+        gap: 1rem;
+        margin: 1.5rem 0;
     }
 
     .rank {
@@ -539,6 +550,7 @@ section h2 {
     }
 
     .ranking-holder {
+        height: 65px;
         width: 340px;
         font-size: 1.5rem;
     }
@@ -567,5 +579,9 @@ section h2 {
 
     .results {
         margin: 2.5rem 0 0.5rem;
+    }
+
+    #goal {
+        margin-bottom: 3rem;
     }
 }
