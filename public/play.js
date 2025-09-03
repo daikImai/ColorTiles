@@ -855,6 +855,7 @@ function check() {
         if (totalScore == 5) { // 5連続クリアしたら
             isGameCleared = true;
             isPlaying = false;
+            document.getElementById("back").style.display = "block";
             saveResult(countTotal, elapsedTime, SIZE, perfect); // クリア時に結果を保存
         } else {
             nextGame();
