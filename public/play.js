@@ -243,6 +243,9 @@ document.addEventListener("DOMContentLoaded", () => {
             isModalOpen = false;
             document.getElementById("mypage-contents").style.display = "none";
             document.getElementById("loading-mypage").style.display = "";
+            document.querySelectorAll('.stats-tabs th[data-size]').forEach(th => {
+                th.classList.remove('tab-selected');
+            }); 
         };
     });
 
@@ -456,6 +459,9 @@ document.addEventListener("DOMContentLoaded", () => {
             isModalOpen = false;
             document.getElementById("ranking-contents").style.display = "none";
             document.getElementById("loading-ranking").style.display = "";
+            document.querySelectorAll('.ranking-tabs th[data-size]').forEach(th => {
+                th.classList.remove('tab-selected');
+            }); 
         };
     });
 
