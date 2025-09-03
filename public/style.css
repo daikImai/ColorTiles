@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
-body {
+html, body {
     font-family: Philosopher;
+    overflow: hidden; /* スクロール禁止 */
     /* background-color: #d0e2fa; */
 }
 
@@ -117,7 +118,7 @@ button {
 
 #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
     position: absolute;
-    bottom: 0.8rem;
+    bottom: 0.6rem;
     height: 30px;
     width: 60px;
     font-size: 0.9rem;
@@ -136,10 +137,10 @@ section h2 {
 
 .new {
     color: #ff5252;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     position: absolute;
     top: -0.8rem;
-    left: 1rem;
+    left: 0.5rem;
 }
 
 #if-not-loggedin {
@@ -214,7 +215,7 @@ section h2 {
 .howToImg {
     height: 200px;
     text-align: center;
-    margin: 0.5rem 0;
+    margin-bottom: 0.5rem;
 }
 
 #ranking-title {
@@ -330,7 +331,7 @@ section h2 {
 }
 
 .buttons {
-    gap: 3rem;
+    gap: 2rem;
     margin-bottom: 1rem;
 }
 
@@ -491,6 +492,11 @@ section h2 {
         margin-top: 2rem;
     }
 
+    .new {
+        font-size: 1.3rem;
+        left: 1rem;
+    }
+
     #if-not-loggedin {
         margin-top: 17rem;
         font-size: 1.3rem;
@@ -528,7 +534,6 @@ section h2 {
 
     .howToImg {
         height: 250px;
-        margin: 0 0 0.5rem;
     }
 
     #ranking-title {
@@ -583,5 +588,9 @@ section h2 {
 
     #goal {
         margin-bottom: 3rem;
+    }
+
+    .buttons {
+        gap: 3rem;
     }
 }

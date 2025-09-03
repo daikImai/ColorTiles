@@ -482,7 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("touchstart", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
         if (e.touches.length > 1) return; // マルチタッチは無視
-        if (!board.contains(e.target)) return; // board内のスワイプのみ
+        // if (!board.contains(e.target)) return; // board内のスワイプのみ
         e.preventDefault();
 
         const touchX = e.touches[0].clientX;
@@ -493,7 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: false });
     document.addEventListener("touchend", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
-        if (!board.contains(e.target)) return;
+        // if (!board.contains(e.target)) return;
         e.preventDefault();
 
         const endX = e.changedTouches[0].clientX;
@@ -744,7 +744,7 @@ function repaint() {
     radius = (10-SIZE) * 2.5;
     gc.fillStyle = "white";
     gc.lineWidth = 1.5;
-    gc.fillRect(0, 0, SIZE * tileSize + 120, SIZE * tileSize + 10);
+    gc.fillRect(0, 0, SIZE * tileSize + 20, SIZE * tileSize + 10);
 
     for (let y = 1; y < data.length - 1; y++) {
         for (let x = 1; x < data[y].length - 1; x++) {
