@@ -804,7 +804,7 @@ function repaint() {
     drawCircle();
 
     if (isGameCleared) { // GameClear
-        gc.font = `bold 58px sans-serif`;
+        gc.font = `bold 50px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
@@ -814,7 +814,7 @@ function repaint() {
     } 
     
     if (isGameOver) { // GameOver
-        gc.font = `bold 58px sans-serif`;
+        gc.font = `bold 50px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
