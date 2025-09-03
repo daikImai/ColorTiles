@@ -597,4 +597,8 @@ section h2 {
     .buttons {
         gap: 3rem;
     }
+
+    #loading-ranking {
+        padding: 14.77rem 0;
+    }
 }
