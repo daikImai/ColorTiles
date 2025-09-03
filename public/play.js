@@ -96,13 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
         startGame();
         window.addEventListener("keydown", mykeydown);
     });
-    document.getElementById("quit").addEventListener("click", quitGame);
+    document.getElementById("back").addEventListener("click", resetGame);
 
     document.addEventListener("keydown", (e) => {
         if (e.code != "Space" || isModalOpen) return;
 
         if (isGameOver || isGameCleared) {
-            quitGame(); // スペースキーでquit
+            resetGame(); // スペースキーでreset
         } else if (!isPlaying) {
             startGame(); // スペースキーでstart
             window.addEventListener("keydown", mykeydown);
@@ -491,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("touchstart", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
         if (e.touches.length > 1) return; // マルチタッチは無視
-        if (!board.contains(e.target)) return; // board内のスワイプのみ
+        // if (!board.contains(e.target)) return; // board内のスワイプのみ
         e.preventDefault();
 
         const touchX = e.touches[0].clientX;
@@ -502,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: false });
     document.addEventListener("touchend", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
-        if (!board.contains(e.target)) return;
+        // if (!board.contains(e.target)) return;
         e.preventDefault();
 
         const endX = e.changedTouches[0].clientX;
@@ -644,7 +644,7 @@ function startGame() {
         document.getElementById("play").style.display = "none";
         document.getElementById("inc").style.display = "none";
         document.getElementById("dec").style.display = "none";
-        document.getElementById("quit").style.display = "block"; 
+        // document.getElementById("back").style.display = "block"; 
         requestAnimationFrame(loop);
     }
 }
@@ -855,7 +855,6 @@ function check() {
         if (totalScore == 5) { // 5連続クリアしたら
             isGameCleared = true;
             isPlaying = false;
-            document.getElementById("quit").textContent = "Back";
             saveResult(countTotal, elapsedTime, SIZE, perfect); // クリア時に結果を保存
         } else {
             nextGame();
@@ -864,6 +863,7 @@ function check() {
         // ターゲットスコアを超える/動けない/色が足りない場合はゲームオーバー
         isGameOver = true;
         isPlaying = false;
+        document.getElementById("back").style.display = "block"; 
     }
 }
 
@@ -919,8 +919,8 @@ function isColorEnough(scores) {
     return true;
 }
 
-// 初期画面に戻る
-function quitGame() {
+// やり直し
+function resetGame() {
     isGameOver = false;
     isGameCleared = false;
     isPlaying = false;
@@ -941,8 +941,7 @@ function quitGame() {
     drawCircle();
     repaint();
 
-    document.getElementById("quit").style.display = "none";
-    document.getElementById("quit").textContent = "Quit";
+    document.getElementById("back").style.display = "none";
     document.getElementById("play").style.display = "block";
     document.getElementById("inc").style.display = "block";
     document.getElementById("dec").style.display = "block";
@@ -965,33 +964,6 @@ function nextGame() {
     initializeGame();
     repaint();
 }
-
-// 同じ盤面をリトライ
-// function resetGame() {
-//     isGameOver = false;
-//     playerColor = 0;
-
-//     for (let y = 1; y < SIZE + 1; y++) {
-//         for (let x = 1; x < SIZE + 1; x++) {
-//             if (data[y][x] === 1 || data[y][x] === 2 || data[y][x] === 3) {
-//                 data[y][x] = 0;
-//             }
-//         }
-//     }
-
-//     initialColorPoints.forEach(({ x, y, value }) => {
-//         data[y][x] = value;
-//     });
-
-//     px = initialPx;
-//     py = initialPy;
-
-//     totalScore = 0;
-//     countPerGame = 0;
-//     perfect = [0, 0, 0, 0, 0];
-
-//     repaint();
-// }
 
 function drawCircle() {
     const ctx = document.getElementById("canvasCircle").getContext("2d");

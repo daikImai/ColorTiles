@@ -138,7 +138,7 @@ button {
     font-size: 0.9rem;
 }
 
-#closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover, #inc:hover, #dec:hover {
+#closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover, #inc:hover, #dec:hover, #back:hover {
     background-color: #13325d;
 }
 
@@ -368,15 +368,10 @@ section h2 {
     cursor: auto;
 }
 
-#quit {
-    background-color: #ff5252;
+#back {
     font-size: 2rem;
     height: 40px;
     width: 80px;
-}
-
-#quit:hover {
-    background-color: #c44040;
 }
 
 .red { color: #ff5252; }
