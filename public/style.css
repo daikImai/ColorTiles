@@ -25,7 +25,7 @@ button {
 }
 
 .margin-bottom {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .df {
@@ -80,8 +80,8 @@ button {
 
 .headers {
     gap: 3rem;
-    margin: 3.5rem 0;
-    font-size: 1.2rem;
+    margin: 1rem 0;
+    font-size: 1.1rem;
     color: #432;
 }
 
@@ -101,13 +101,13 @@ button {
 }
 
 #myPageModal, #howToPlayModal, #rankingModal {
-    width: 465px;
-    height: 730px;
-    padding: 0.5rem 2rem 1.5rem;
+    width: 350px;
+    height: 690px;
+    padding: 0.5rem 1rem 1.5rem;
     background-color: white;
     border-radius: 16px;
     position: absolute;
-    inset: 2.7rem 0 auto;
+    inset: 1.2rem 0 auto;
     margin: auto;
     z-index: 9999;
     opacity: 0;
@@ -117,11 +117,10 @@ button {
 
 #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
     position: absolute;
-    bottom: 1.5rem;
+    bottom: 1.2rem;
     height: 30px;
     width: 60px;
     font-size: 0.9rem;
-    padding-bottom: 0.2rem;
 }
 
 #closeMyPageButton:hover, #closeHowToPlayButton:hover, #closeRankingButton:hover, #play:hover, #inc:hover, #dec:hover {
@@ -132,7 +131,7 @@ section h2 {
     text-align: center;
     font-weight: normal;
     font-size: 2rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 .new {
@@ -145,15 +144,15 @@ section h2 {
 
 #if-not-loggedin {
     text-align: center;
-    margin-top: 17rem;
-    font-size: 1.3rem;
+    margin-top: 15rem;
+    font-size: 1.1rem;
     margin-bottom: 5rem;
 }
 
 #stats-container, #ranking-container {
     border: 2px solid #ccc;
     border-radius: 5px;
-    margin: 2rem auto;
+    margin: 1rem auto;
     padding-bottom: 0.5rem;
     position: relative;
     background-color: #f0f0f0;
@@ -166,7 +165,7 @@ section h2 {
 .stats-tabs th, .ranking-tabs th {
     font-weight: normal;
     text-align: center;
-    padding: 0.5rem 3rem;
+    padding: 0.5rem 2.14rem;
     border-bottom: 2px solid #ccc;
     font-size: 1.5rem;
     cursor: pointer;
@@ -178,11 +177,11 @@ section h2 {
 }
 
 #mypage-contents {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 #mypage-contents li {
-    margin: 1.2rem 0 1.2rem 2.5rem;
+    margin: 1.2rem 0 1.2rem 2rem;
 }
 
 .result-holder {
@@ -190,9 +189,9 @@ section h2 {
     background-color: #d0e2fa;
     border-radius: 10px;
     height: 50px;
-    width: 320px;
+    width: 280px;
     position: relative;
-    margin-left: 2.5rem;
+    margin-left: 1.1rem;
 }
 
 #log-out {
@@ -208,13 +207,13 @@ section h2 {
 }
 
 #howToPlayModal p {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .howToImg {
-    height: 250px;
+    height: 200px;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0;
 }
 
 #ranking-title {
@@ -237,8 +236,8 @@ section h2 {
     background-color: #d0e2fa;
     border-radius: 10px;
     height: 65px;
-    width: 340px;
-    font-size: 1.5rem;
+    width: 280px;
+    font-size: 1.3rem;
     transform: scale(1);
     transition: transform 0.2s ease-out;
 }
@@ -248,13 +247,13 @@ section h2 {
 }
 
 .rank {
-    font-size: 2rem;
-    margin: 0 1.5rem;
+    font-size: 1.8rem;
+    margin: 0 1.1rem;
 }
 
 .first {
     background-color: #f8f3be;
-    padding-left: 0.18rem;
+    padding-left: 0.1rem;
 }
 
 .second {
@@ -267,11 +266,11 @@ section h2 {
 
 #reload {
     position: absolute;
-    top: 12%;
-    right: 28px;
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
+    top: 12.5%;
+    right: 11px;
+    width: 30px;
+    height: 30px;
+    font-size: 1.3rem;
     background-color: #ccc;
     padding-top: 0.2rem;
     cursor: pointer;
@@ -286,19 +285,19 @@ section h2 {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
+    width: 30px;
+    height: 30px;
+    font-size: 1.3rem;
     background-color: #ccc;
     cursor: pointer;
 }
 
 #toWeekly {
-    left: -22px;
+    left: -16px;
 }
 
 #toAllTime {
-    right: -22px;
+    right: -16px;
 }
 
 #reload:hover, #toWeekly:hover, #toAllTime:hover {
@@ -307,7 +306,7 @@ section h2 {
 
 .results {
     text-align: center;
-    margin: 2.5rem 0 0.5rem;
+    margin: 1.5rem 0 0.5rem;
     font-size: 1.5rem;
     user-select: none;
 }
@@ -469,5 +468,104 @@ section h2 {
     .submit-btn {
         font-size: 1.1rem;
         margin-right: 1rem;
+    }
+
+    .headers {
+        margin: 3.5rem 0;
+        font-size: 1.2rem;
+    }
+
+    #myPageModal, #howToPlayModal, #rankingModal {
+        width: 465px;
+        height: 730px;
+        padding: 0.5rem 2rem 1.5rem;
+        inset: 2.7rem 0 auto;
+    }
+
+    #closeMyPageButton, #closeHowToPlayButton, #closeRankingButton {
+        bottom: 1.5rem;
+    }
+
+    section h2 {
+        margin-top: 2rem;
+    }
+
+    #if-not-loggedin {
+        margin-top: 17rem;
+        font-size: 1.3rem;
+    }
+
+    #stats-container, #ranking-container {
+        margin: 2rem auto;
+    }
+
+    .stats-tabs th, .ranking-tabs th {
+        padding: 0.5rem 3rem;
+    }
+
+    #mypage-contents {
+        font-size: 1.5rem;
+    }
+
+    #mypage-contents li {
+        margin: 1.2rem 0 1.2rem 2.5rem;
+    }
+
+    .result-holder {
+        width: 320px;
+        margin-left: 2.5rem;
+    }
+
+    .margin-bottom {
+        margin-bottom: 1.5rem;
+    }
+
+    #howToPlayModal p {
+        margin-top: 1rem;
+    }
+
+    .howToImg {
+        height: 250px;
+        margin: 0 0 0.5rem;
+    }
+
+    .rank {
+        font-size: 2rem;
+        margin: 0 1.5rem;
+    }
+
+    .first {
+        padding-left: 0.15rem;
+    }
+
+    .ranking-holder {
+        width: 340px;
+        font-size: 1.5rem;
+    }
+
+    #reload {
+        top: 12%;
+        right: 28px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    #toWeekly, #toAllTime {
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+    }
+
+    #toWeekly {
+        left: -22px;
+    }
+
+    #toAllTime {
+        right: -22px;
+    }
+
+    .results {
+        margin: 2.5rem 0 0.5rem;
     }
 }
