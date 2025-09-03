@@ -860,7 +860,7 @@ function check() {
         } else {
             nextGame();
         }
-    } else if (scores.red > targetScores.red || scores.blue > targetScores.blue || scores.green > targetScores.green || !canMove() || !isColorEnough(scores)) { 
+    } else if (scores.red > targetScores.red || scores.blue > targetScores.blue || scores.green > targetScores.green || !canFillMore() || !isColorEnough(scores)) { 
         // ターゲットスコアを超える/動けない/色が足りない場合はゲームオーバー
         isGameOver = true;
         isPlaying = false;
@@ -896,21 +896,26 @@ async function saveResult(count, time, boardSize, perfect) {
     }
 }
 
-// 動けるかどうか
-function canMove() {
+// まだ塗れるかどうか
+function canFillMore() {
     const dirs = [
         { dx: 0, dy: -1 },
         { dx: 0, dy: 1 },
         { dx: -1, dy: 0 },
         { dx: 1, dy: 0 }
     ];
-    for (let { dx, dy } of dirs) {
-        let nx = px + dx, ny = py + dy;
-        if (data[ny][nx] == 6) continue; // 壁は動けない
-        if (data[ny][nx] == 0) return true; // 空きマスは動ける
-        if (data[ny][nx] == playerColor || data[ny][nx] == 11 || data[ny][nx] == 22 || data[ny][nx] == 33) return true; // 自分の色 or 色の起点は動ける
+    for (let y = 1; y < SIZE + 1; y++) {
+        for (let x = 1; x < SIZE + 1; x++) {
+            if (data[y][x] !== playerColor) continue; // playerColorのマスだけチェック
+
+            for (let { dx, dy } of dirs) {
+                const nx = x + dx, ny = y + dy;
+                if (data[ny][nx] == 6) continue; // 壁は動けない
+                if ([0, 11, 22, 33].includes(data[ny][nx])) return true; // 空きマスと起点は移動可能
+            }
+        }
     }
-    return false;
+    return false; // 全playerColorマスで自分の色以外動けない場合
 }
 
 function isColorEnough(scores) {
