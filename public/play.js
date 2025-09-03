@@ -92,7 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
     repaint();
     fetchUser(); // ログインユーザ情報を取得
     
-    document.getElementById("play").addEventListener("click", startGame);
+    document.getElementById("play").addEventListener("click", () => {
+        startGame();
+        window.addEventListener("keydown", mykeydown);
+    });
     document.getElementById("quit").addEventListener("click", quitGame);
 
     document.addEventListener("keydown", (e) => {
@@ -482,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("touchstart", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
         if (e.touches.length > 1) return; // マルチタッチは無視
-        // if (!board.contains(e.target)) return; // board内のスワイプのみ
+        if (!board.contains(e.target)) return; // board内のスワイプのみ
         e.preventDefault();
 
         const touchX = e.touches[0].clientX;
@@ -493,7 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: false });
     document.addEventListener("touchend", function(e) {
         if (!isPlaying || isGameOver || isGameCleared) return;
-        // if (!board.contains(e.target)) return;
+        if (!board.contains(e.target)) return;
         e.preventDefault();
 
         const endX = e.changedTouches[0].clientX;
@@ -801,7 +804,7 @@ function repaint() {
     drawCircle();
 
     if (isGameCleared) { // GameClear
-        gc.font = `bold 63px Philosopher, sans-serif`;
+        gc.font = `bold 58px sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
@@ -811,7 +814,7 @@ function repaint() {
     } 
     
     if (isGameOver) { // GameOver
-        gc.font = `bold 63px Philosopher, sans-serif`;
+        gc.font = `bold 58px sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
