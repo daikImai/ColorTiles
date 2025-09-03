@@ -107,7 +107,7 @@ async function fetchUser() {
 function drawLine(drawLine) { 
     drawLine.strokeStyle = "#13325d";
     drawLine.beginPath();
-    drawLine.moveTo(0, 10);
-    drawLine.lineTo(390, 10);
+    drawLine.moveTo(0, 1);
+    drawLine.lineTo(390, 1);
     drawLine.stroke();
 }
