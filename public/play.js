@@ -12,6 +12,9 @@ let currentUsername = "unknown";
 let SIZE = 5;
 let board = null;
 let gc = null;
+let tileSize = 60;
+let halfTile = tileSize / 2;
+let radius = (10-SIZE) * 2.5;
 let startX, startY;
 let initialPx, initialPy;
 let px, py;
@@ -176,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         th.classList.remove('tab-selected');
                     }
                 }); 
-                
+
                 renderBoardSize(SIZE);
                 document.getElementById("loading-mypage").style.display = "none"; // ローディングを消す
                 document.getElementById("mypage-contents").style.display = "block"; // 記録画面を表示
@@ -606,6 +609,11 @@ function isValidPosition(initialColorPoints, targetScores) {
 function initializeGame() {
     setTargetScores();
     do {
+        for (let y = 1; y <= SIZE; y++) { // dataを空に戻す
+            for (let x = 1; x <= SIZE; x++) {
+                data[y][x] = 0;
+            }
+        }
         initialColorPoints = [];
         for (let i = 0; i < colorPoints.length; i++) {
             let { x, y } = getRandomEmptyPosition();
@@ -728,7 +736,12 @@ function mykeydown(e) {
     repaint();
 }
 
-function repaint(tileSize=60) {
+function repaint() {
+    if (SIZE == 4) tileSize = 75;
+    else if (SIZE == 5) tileSize = 60;
+    else if (SIZE == 6) tileSize = 50;
+    halfTile = tileSize / 2;
+    radius = (10-SIZE) * 2.5;
     gc.fillStyle = "white";
     gc.lineWidth = 1.5;
     gc.fillRect(0, 0, SIZE * tileSize + 120, SIZE * tileSize + 10);
@@ -746,24 +759,24 @@ function repaint(tileSize=60) {
             } else {
                 gc.fillStyle = "#ddd";
             }
-            gc.fillRect((x-1) * tileSize + 60, (y-1) * tileSize + 5, tileSize, tileSize);
+            gc.fillRect((x-1) * tileSize + 10, (y-1) * tileSize + 5, tileSize, tileSize); // margin-left=10
             gc.strokeStyle = "#432";
-            gc.strokeRect((x-1) * tileSize + 60, (y-1) * tileSize + 5, tileSize, tileSize);
+            gc.strokeRect((x-1) * tileSize + 10, (y-1) * tileSize + 5, tileSize, tileSize);
 
             if (data[y][x] == 11) {
                 gc.fillStyle = "#ff5252";
                 gc.beginPath();
-                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + halfTile + 10, (y-1) * tileSize + halfTile + 5, radius, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 22) {
                 gc.fillStyle = "#7192f5";
                 gc.beginPath();
-                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + halfTile + 10, (y-1) * tileSize + halfTile + 5, radius, 0, Math.PI * 2);
                 gc.fill();
             } else if (data[y][x] == 33) {
                 gc.fillStyle = "#30cf8a";
                 gc.beginPath();
-                gc.arc((x-1) * tileSize + 30 + 60, (y-1) * tileSize + 30 + 5, 12.5, 0, Math.PI * 2);
+                gc.arc((x-1) * tileSize + halfTile + 10, (y-1) * tileSize + halfTile + 5, radius, 0, Math.PI * 2);
                 gc.fill();
             }
         }
@@ -780,33 +793,31 @@ function repaint(tileSize=60) {
         } else {
             gc.fillStyle = "white"; 
         }
-        gc.fillRect((px-1) * tileSize + 17.5 + 60, (py-1) * tileSize + 17.5 + 5, 25, 25);
+        gc.fillRect((px-1) * tileSize + (halfTile-radius) + 10, (py-1) * tileSize + (halfTile-radius) + 5, radius*2, radius*2);
         gc.strokeStyle = "#432";
-        gc.strokeRect((px-1) * tileSize + 17.5 + 60, (py-1) * tileSize + 17.5 + 5, 25, 25);
+        gc.strokeRect((px-1) * tileSize + (halfTile-radius) + 10, (py-1) * tileSize + (halfTile-radius) + 5, radius*2, radius*2);
     }
 
     drawCircle();
 
     if (isGameCleared) { // GameClear
-        let fontSize = SIZE * 10 + 20;
-        gc.font = `bold ${fontSize}px Philosopher, sans-serif`;
+        gc.font = `bold 63px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
-        gc.strokeText("Game Clear", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
+        gc.strokeText("Game Clear", 5 * 30 + 10, 5 * 30 + 20 + 5);
         gc.fillStyle = "gold";
-        gc.fillText("Game Clear", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
+        gc.fillText("Game Clear", 5 * 30 + 10, 5 * 30 + 20 + 5);
     } 
     
     if (isGameOver) { // GameOver
-        let fontSize = SIZE * 10 + 20;
-        gc.font = `bold ${fontSize}px Philosopher, sans-serif`;
+        gc.font = `bold 63px Philosopher, sans-serif`;
         gc.textAlign = "center";
         gc.strokeStyle = "black";
         gc.lineWidth = 5;
-        gc.strokeText("Game Over", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
+        gc.strokeText("Game Over", 5 * 30 + 10, 5 * 30 + 20 + 5);
         gc.fillStyle = "red";
-        gc.fillText("Game Over", SIZE * 30 + 60, SIZE * 30 + 20 + 5);
+        gc.fillText("Game Over", 5 * 30 + 10, 5 * 30 + 20 + 5);
     }
 
     if (!isHidden) document.getElementById("result").innerHTML = countTotal + ' <i class="fa-solid fa-hourglass-half"></i> ' + formatTime(elapsedTime);
