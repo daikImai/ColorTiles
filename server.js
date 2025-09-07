@@ -236,14 +236,20 @@ app.get('/api/user-stats', requireAuth, async (req, res) => {
 
     // 最良スコア（今週）
     const weekStart = new Date();
-    weekStart.setHours(0,0,0,0);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時
+    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時(JST)
+    // weekStart.setDate(weekStart.getDate() - (weekStart.getDay() == 0 ? 6 : weekStart.getDay() - 1)); // 今週月曜の0時(JST)
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
     const bestWeekScoreResult = await pool.query(`
       SELECT DISTINCT ON (board_size) board_size, count, time
       FROM results
-      WHERE user_id = $1 AND created_at >= $2
+      WHERE user_id = $1 
+      AND (created_at AT TIME ZONE 'Asia/Tokyo') >= $2
+      AND (created_at AT TIME ZONE 'Asia/Tokyo') < $3
       ORDER BY board_size, count ASC, time ASC
-    `, [userId, weekStart]);
+    `, [userId, weekStart, weekEnd]);
 
     res.json({
       perfectPerGame: perfectPerGameResult.rows, 
@@ -263,7 +269,10 @@ app.get('/api/get-ranking', async (req, res) => {
   try {
     const weekStart = new Date();
     weekStart.setHours(0, 0, 0, 0);
-    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // 今週日曜の0時(JST)
+    // weekStart.setDate(weekStart.getDate() - (weekStart.getDay() == 0 ? 6 : weekStart.getDay() - 1)); // 今週月曜の0時(JST)
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
 
     // 累計ランキング
     const allTimeResult = await pool.query(`
@@ -299,10 +308,11 @@ app.get('/api/get-ranking', async (req, res) => {
           ) AS rn
         FROM results r
         LEFT JOIN users u ON r.user_id = u.id
-        WHERE r.created_at >= $1
+        WHERE (r.created_at AT TIME ZONE 'Asia/Tokyo') >= $1 
+        AND (r.created_at AT TIME ZONE 'Asia/Tokyo') < $2
       ) ranked
       WHERE rn <= 5; -- top 5
-    `, [weekStart]);
+    `, [weekStart, weekEnd]);
 
     res.json({
       allTime: allTimeResult.rows,
