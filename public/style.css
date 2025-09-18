@@ -229,7 +229,7 @@ section h2 {
 .howToImg {
     height: 200px;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin: -0.5rem 0 0.5rem;
 }
 
 #ranking-title {
@@ -547,6 +547,7 @@ section h2 {
 
     .howToImg {
         height: 250px;
+        margin: 0 0 0.5rem;
     }
 
     #ranking-title {
